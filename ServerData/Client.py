@@ -5,13 +5,12 @@ class Client:
         self.host = host
         self.port = port
 
-
-    def send_number_to_server(self, number):
+    def Get_Billboards(self, request):
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((self.host, self.port))
 
-            client.send(str(number).encode('utf-8'))
+            client.send(request.encode('utf-8'))
 
             response = b''
             while True:

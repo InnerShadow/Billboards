@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         self.view.setScene(self.scene)
 
         client = Client('127.0.0.1', 2000)
-        client.send_number_to_server(5)
+        client.Get_Billboards('GET_BILLBOARDS')
 
         rectangles = [
             (200, 200, self.billboard_w, self.billboard_h)
