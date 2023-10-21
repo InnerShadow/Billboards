@@ -1,24 +1,44 @@
-import socket
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QGraphicsView, QGraphicsScene, QGraphicsRectItem
+from PyQt5.QtCore import Qt
 
-def send_number_to_server(number):
-    try:
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(('127.0.0.1', 2000))
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-        client.send(str(number).encode('utf-8'))
+        self.initUI()
 
-        response = b''
-        while True:
-            data = client.recv(1024)
-            if not data:
-                break
-            response += data
+    def initUI(self):
+        self.setGeometry(100, 100, 800, 600)
+        self.setWindowTitle('BillBoards')
 
-        print(response.decode('utf-8'))
-    finally:
-        client.close()
+        self.central_widget = QWidget(self)
+        self.setCentralWidget(self.central_widget)
+
+        layout = QVBoxLayout(self.central_widget)
+
+        self.view = QGraphicsView()
+        layout.addWidget(self.view)
+
+        self.scene = QGraphicsScene()
+        self.view.setScene(self.scene)
+
+        rectangles = [
+            (200, 200, 150, 80)
+        ]
+
+        for rect in rectangles:
+            x, y, w, h = rect
+            item = QGraphicsRectItem(x, y, w, h)
+            item.setBrush(Qt.black)
+            self.scene.addItem(item)
+
+        self.show()
+
+def main():
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    number = 5
-    send_number_to_server(number)
-
+    main()
