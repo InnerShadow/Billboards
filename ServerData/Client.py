@@ -23,3 +23,5 @@ class Client:
         finally:
             client.close()
 
+        return response.decode('utf-8')
+
