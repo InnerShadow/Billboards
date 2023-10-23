@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QGraphicsView, QGraphicsScene, QGraphicsRectItem
+from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
 import re
 
 from ServerData.Client import *
@@ -37,6 +38,11 @@ class MainWindow(QMainWindow):
 
         self.scene = QGraphicsScene()
         self.view.setScene(self.scene)
+
+        background_image = QPixmap('Data/Jodino.png')
+        background_item = QGraphicsPixmapItem(background_image)
+        background_item.setZValue(0)
+        self.scene.addItem(background_item)
 
         client = Client('127.0.0.1', 2000)
         billboards_positions = self.parse_billboards(client.Get_Billboards('GET_BILLBOARDS'))
