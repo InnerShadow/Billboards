@@ -5,6 +5,7 @@ class Client:
         self.host = host
         self.port = port
 
+
     def Get_Billboards(self, request):
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,4 +25,18 @@ class Client:
             client.close()
 
         return response.decode('utf-8')
+    
 
+    def get_ip_address(self):
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            s.settimeout(0.1)
+            
+            s.connect(("8.8.8.8", 80))
+            local_ip_address = s.getsockname()[0]
+            s.close()
+            
+            return local_ip_address
+        except Exception as e:
+            print(f"Error getting local IP address: {e}")
+            return None

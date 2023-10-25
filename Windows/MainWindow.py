@@ -12,8 +12,18 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-
+        self.initClient()
+        self.initBillboards()
         self.initUI()
+
+
+    def initClient(self):
+        self.client = Client('127.0.0.1', 2000)
+        #print(self.client.get_ip_address())
+
+
+    def initBillboards(self):
+        self.billboards_positions = self.parse_billboards(self.client.Get_Billboards('GET_BILLBOARDS'))
 
     
     def parse_billboards(self, response_text):
@@ -57,7 +67,6 @@ class MainWindow(QMainWindow):
 
 
     def updateGraphicsItems(self):
-        client = Client('127.0.0.1', 2000)
         bg_width = self.view.viewport().width()
         bg_height = self.view.viewport().height()
         self.background_item.setPixmap(self.background_image.scaled(bg_width, bg_height, Qt.KeepAspectRatio))
@@ -66,8 +75,7 @@ class MainWindow(QMainWindow):
             if isinstance(item, QGraphicsRectItem):
                 self.scene.removeItem(item)
 
-        billboards_positions = self.parse_billboards(client.Get_Billboards('GET_BILLBOARDS'))
-        for x, y in billboards_positions:
+        for x, y in self.billboards_positions:
             x = int(x * bg_width)
             y = int(y * bg_height)
 
