@@ -61,8 +61,8 @@ class MainWindow(QMainWindow):
 
 
     def initUI(self):
-        self.setGeometry(100, 100, 800, 600)
         self.setWindowTitle('BillBoards')
+        self.setWindowState(Qt.WindowFullScreen)
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
