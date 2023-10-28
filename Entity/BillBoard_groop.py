@@ -5,7 +5,7 @@ from Entity.Schedules import *
 
 class BillBoard_groop:
 
-    BillBoards : list(BillBoard) = []
+    BillBoards : list = []
 
     def __init__(self, groop_name : str, schedules : Schedules):
         self.groop_name = groop_name
