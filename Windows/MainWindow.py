@@ -8,6 +8,7 @@ import re
 from ServerData.Client import *
 from Entity.BillBoard_groop import *
 from InteractiveObjects.Graphic_BillBoard import *
+from Entity.Schedules import *
 
 class MainWindow(QMainWindow):
 
@@ -30,17 +31,24 @@ class MainWindow(QMainWindow):
 
     def initBillboards(self):
         groop_pattern = r'Group: ([\w\s_]+), Owner: [\w\s_]+, Schedule: ([\w\s_]+)'
-        groop_response = self.client.Get_Billboards('GET_BILLBOARDS')
+        groop_response = self.client.Get_response('GET_BILLBOARDS')
 
         for match in re.finditer(groop_pattern, groop_response):
             groop_name = match.group(1)
-            schedules = match.group(2)
+            schedules_name = match.group(2)
+
+            schedules_request = f"GET GROUP SCHEDULES schedules_name = {schedules_name}"
+            schedules_repsnose = self.client.Get_response(schedules_request)
+
+            schedules = Schedules(schedules_name)
+            schedules.fill_from_response(schedules_repsnose)
+
             groop = BillBoard_groop(groop_name, schedules)
 
             if_add = True
 
             for i in self.billboards_groops:
-                if i.groop_name == groop_name and i.schedules_name == schedules:
+                if i.groop_name == groop_name and i.schedules.schedules_name == schedules_name:
                     if_add = False
 
             if if_add:

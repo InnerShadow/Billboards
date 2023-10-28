@@ -6,7 +6,7 @@ class Client:
         self.port = port
 
 
-    def Get_Billboards(self, request):
+    def Get_response(self, request):
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((self.host, self.port))
@@ -20,7 +20,7 @@ class Client:
                     break
                 response += data
 
-            print(response.decode('utf-8'))
+            #print(response.decode('utf-8'))
         finally:
             client.close()
 
