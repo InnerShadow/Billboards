@@ -40,11 +40,6 @@ class MainWindow(QMainWindow):
             schedules_request = f"GET GROUP SCHEDULES schedules_name = {schedules_name}"
             schedules_repsnose = self.client.Get_response(schedules_request)
 
-            schedules = Schedules(schedules_name)
-            schedules.fill_from_response(schedules_repsnose)
-
-            groop = BillBoard_groop(groop_name, schedules)
-
             if_add = True
 
             for i in self.billboards_groops:
@@ -52,6 +47,10 @@ class MainWindow(QMainWindow):
                     if_add = False
 
             if if_add:
+                schedules = Schedules(schedules_name)
+                schedules.fill_from_response(schedules_repsnose)
+
+                groop = BillBoard_groop(groop_name, schedules)
                 self.billboards_groops.append(groop)
 
 
@@ -62,8 +61,6 @@ class MainWindow(QMainWindow):
     def initUI(self):
         self.setWindowTitle('BillBoards')
         self.setWindowState(Qt.WindowFullScreen)
-
-        QToolTip.setFont(QFont('SansSerif', 10))
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
