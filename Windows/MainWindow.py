@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
     billboard_w : int = 75
     billboard_h : int = 40 
 
-    billboards_groops : list = [] 
+    billboards_groops : list[BillBoard_groop] = [] 
 
     def __init__(self):
         super().__init__()
