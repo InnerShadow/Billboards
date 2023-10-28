@@ -6,9 +6,9 @@ class BillBoard_groop:
 
     BillBoards = []
 
-    def __init__(self, groop_name, schedules):
+    def __init__(self, groop_name : str, schedules_name : str):
         self.groop_name = groop_name
-        self.schedules = schedules
+        self.schedules_name = schedules_name
         
 
     def fill_BillBoards(self, response):

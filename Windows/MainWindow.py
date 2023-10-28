@@ -47,17 +47,6 @@ class MainWindow(QMainWindow):
         for i in self.billboards_groops:
             i.fill_BillBoards(response)
             
-        
-        #self.billboards_positions = self.parse_billboards(self.client.Get_Billboards('GET_BILLBOARDS'))
-
-    
-    def parse_billboards(self, response_text):
-        print(response_text)
-        pattern = r'X: (\d+), Y: (\d+)'
-        matches = re.findall(pattern, response_text)
-
-        coordinates = [(int(x) / 1000, int(y) / 1000) for x, y in matches]
-        return coordinates
 
 
     def initUI(self):
