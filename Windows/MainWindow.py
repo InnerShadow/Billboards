@@ -1,12 +1,13 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QFont
 import re
 
 from ServerData.Client import *
 from Entity.BillBoard_groop import *
+from InteractiveObjects.Graphic_BillBoard import *
 
 class MainWindow(QMainWindow):
 
@@ -29,9 +30,9 @@ class MainWindow(QMainWindow):
 
     def initBillboards(self):
         groop_pattern = r'Group: ([\w\s_]+), Owner: [\w\s_]+, Schedule: ([\w\s_]+)'
-        response = self.client.Get_Billboards('GET_BILLBOARDS')
+        groop_response = self.client.Get_Billboards('GET_BILLBOARDS')
 
-        for match in re.finditer(groop_pattern, response):
+        for match in re.finditer(groop_pattern, groop_response):
             groop_name = match.group(1)
             schedules = match.group(2)
             groop = BillBoard_groop(groop_name, schedules)
@@ -47,13 +48,14 @@ class MainWindow(QMainWindow):
 
 
         for i in self.billboards_groops:
-            i.fill_BillBoards(response)
+            i.fill_BillBoards(groop_response)
             
-
 
     def initUI(self):
         self.setWindowTitle('BillBoards')
         self.setWindowState(Qt.WindowFullScreen)
+
+        QToolTip.setFont(QFont('SansSerif', 10))
 
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
@@ -90,9 +92,7 @@ class MainWindow(QMainWindow):
 
         self.updateBeackground(bg_width, bg_height)
 
-        for item in self.scene.items():
-            if isinstance(item, QGraphicsRectItem):
-                self.scene.removeItem(item)
+        self.clearScene()
 
         self.updateBillboards(min([bg_width, bg_height]))
 
@@ -108,15 +108,18 @@ class MainWindow(QMainWindow):
     def updateBillboards(self, min_size : int):
         for groop in self.billboards_groops:
             for billboard in groop.BillBoards:
-                x = int(billboard.x * min_size)
-                y = int(billboard.y * min_size)
+                x = int(billboard.x_pos * min_size)
+                y = int(billboard.y_pos * min_size)
 
-                rect = QRect(x, y, self.billboard_w, self.billboard_h)
-                scaled_rect = rect.intersected(self.background_item.boundingRect().toRect())
-                x, y, w, h = scaled_rect.x(), scaled_rect.y(), scaled_rect.width(), scaled_rect.height()
-                item = QGraphicsRectItem(x, y, w, h)
-                item.setBrush(Qt.black)
-                self.scene.addItem(item)
+                graphic_billboard = GraphicBillboard(x, y, self.billboard_w, self.billboard_h, billboard)
+
+                self.scene.addItem(graphic_billboard)
+
+
+    def clearScene(self):
+        for item in self.scene.items():
+            if isinstance(item, QGraphicsRectItem):
+                self.scene.removeItem(item)
 
 
     def init_beckground(self):

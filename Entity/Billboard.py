@@ -1,11 +1,8 @@
 
 class BillBoard:
-    def __init__(self, x : float, y : float, billboards_groop_name : str, owner_name : str):
-        self.x = x
-        self.y = y
+    def __init__(self, x_pos : float, y_pos : float, billboards_groop_name : str, owner_name : str):
+        self.x_pos = x_pos  
+        self.y_pos = y_pos
         self.billboards_groop_name = billboards_groop_name
         self.owner_name = owner_name
         
-
-
-    
