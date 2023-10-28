@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from Entity.Billboard import *
 
 class GraphicBillboard(QGraphicsRectItem):
-    def __init__(self, x, y, w, h, billboard : BillBoard):
+    def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard):
         super().__init__(x, y, w, h)
         self.billboard = billboard
         self.setBrush(Qt.black)

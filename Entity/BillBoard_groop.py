@@ -5,7 +5,7 @@ from Entity.Schedules import *
 
 class BillBoard_groop:
 
-    BillBoards = []
+    BillBoards : list(BillBoard) = []
 
     def __init__(self, groop_name : str, schedules : Schedules):
         self.groop_name = groop_name
@@ -22,3 +22,4 @@ class BillBoard_groop:
             owner, x, y = match
             billBoard = BillBoard(float(x), float(y), self.schedules.schedules_name, owner)
             self.BillBoards.append(billBoard)
+

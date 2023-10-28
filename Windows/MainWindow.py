@@ -1,9 +1,9 @@
+import re
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QFont
-import re
 
 from ServerData.Client import *
 from Entity.BillBoard_groop import *
@@ -12,10 +12,10 @@ from Entity.Schedules import *
 
 class MainWindow(QMainWindow):
 
-    billboard_w = 75
-    billboard_h = 40
+    billboard_w : int = 75
+    billboard_h : int = 40 
 
-    billboards_groops = []
+    billboards_groops : list(BillBoard_groop) = [] 
 
     def __init__(self):
         super().__init__()
