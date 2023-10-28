@@ -20,6 +20,6 @@ class BillBoard_groop:
 
         for match in matches:
             owner, x, y = match
-            billBoard = BillBoard(float(x), float(y), self.schedules.schedules_name, owner)
+            billBoard = BillBoard(float(x), float(y), self.groop_name, owner, self.schedules.schedules_name)
             self.BillBoards.append(billBoard)
 

@@ -1,4 +1,6 @@
 import re
+from datetime import datetime
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -116,7 +118,7 @@ class MainWindow(QMainWindow):
                 x = int(billboard.x_pos * min_size)
                 y = int(billboard.y_pos * min_size)
 
-                graphic_billboard = GraphicBillboard(x, y, self.billboard_w, self.billboard_h, billboard)
+                graphic_billboard = GraphicBillboard(x, y, self.billboard_w, self.billboard_h, billboard, self.client)
 
                 self.scene.addItem(graphic_billboard)
 
