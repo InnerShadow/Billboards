@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QGraphicsItem
 
 from Entity.Billboard import *
 from ServerData.Client import *
@@ -26,7 +27,14 @@ class GraphicBillboard(QGraphicsRectItem):
 
         self.setBrush(Qt.black)
         self.setToolTip(self.getToolTip())
-        
+
+        self.setAcceptHoverEvents(True)
+
+
+    def hoverEnterEvent(self, event):
+        self.setToolTip(self.getToolTip())
+        super().hoverEnterEvent(event)
+    
     
     def getToolTip(self):
 

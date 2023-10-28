@@ -1,11 +1,9 @@
 import re
-from datetime import datetime
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtGui import QFont
 
 from ServerData.Client import *
 from Entity.BillBoard_groop import *
