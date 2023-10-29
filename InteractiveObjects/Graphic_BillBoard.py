@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QBrush, QColor
 
 from Entity.Billboard import *
 from ServerData.Client import *
@@ -29,7 +30,9 @@ class GraphicBillboard(QGraphicsRectItem):
 
         self.init_time = init_time
 
-        self.setBrush(Qt.black)
+        brush = QBrush(QColor(0, 0, 0, int(255 * 3 / 4)))
+        self.setBrush(brush)
+
         self.setToolTip(self.getToolTip())
 
         self.video_player = None
@@ -46,6 +49,7 @@ class GraphicBillboard(QGraphicsRectItem):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.get_video()
+
         super().mousePressEvent(event)
     
     
@@ -93,9 +97,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
     def on_download_finished(self):
         self.video_player = VideoPlayer(self.current_ad.vidio_url)
-        diffrence = self.start_play_time - datetime.now()
-        seconds_diffrens = diffrence.total_seconds()
-        time_diffrence = self.current_ad.ad_duration - int(seconds_diffrens)
+        time_diffrence = self.current_ad.ad_duration - int((self.start_play_time - datetime.now()).total_seconds())
         print(time_diffrence)
         playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence, ))
         playback_thread.start()
