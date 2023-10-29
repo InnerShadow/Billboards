@@ -1,3 +1,5 @@
+import os
+
 from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
@@ -7,6 +9,7 @@ from PyQt5.QtWidgets import QGraphicsItem
 from Entity.Billboard import *
 from ServerData.Client import *
 from Entity.Schedules import *
+from InteractiveObjects.Video_downloader import *
 
 class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, client : Client):
@@ -74,10 +77,15 @@ class GraphicBillboard(QGraphicsRectItem):
 
 
     def get_video(self):
-        ad_request = f"GET AD ad_path = {self.current_ad.vidio_url}"
-        ad_repsnose = self.client.Get_response(ad_request)
+        if not os.path.exists(self.current_ad.vidio_url):
+            self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.client)
+            self.video_downloader.finished.connect(self.on_download_finished)
+            self.video_downloader.start()
 
-        with open(self.current_ad.vidio_url, 'wb') as file:
-            file.write(ad_repsnose)
+        else:
+            self.on_download_finished()
 
+
+    def on_download_finished(self):
         pass
+
