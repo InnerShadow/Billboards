@@ -1,15 +1,19 @@
 import os
+import threading
 
 from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QGraphicsItem
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimediaWidgets import QVideoWidget
+from PyQt5.QtCore import QUrl
 
 from Entity.Billboard import *
 from ServerData.Client import *
 from Entity.Schedules import *
 from InteractiveObjects.Video_downloader import *
+from InteractiveObjects.Video_player import VideoPlayer
 
 class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, client : Client):
@@ -30,6 +34,8 @@ class GraphicBillboard(QGraphicsRectItem):
 
         self.setBrush(Qt.black)
         self.setToolTip(self.getToolTip())
+
+        self.video_player = None
 
         self.setAcceptHoverEvents(True)
         self.setAcceptTouchEvents(True)
@@ -87,5 +93,10 @@ class GraphicBillboard(QGraphicsRectItem):
 
 
     def on_download_finished(self):
-        pass
+        self.video_player = VideoPlayer(self.current_ad.vidio_url)
+        #self.video_player.play()
+        playback_thread = threading.Thread(target = self.video_player.play)
+        playback_thread.start()
+        #self.video_player.show()
+        #self.video_player.play_video()
 
