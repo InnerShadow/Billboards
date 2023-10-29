@@ -12,6 +12,8 @@ from ServerData.Client import *
 from Entity.Schedules import *
 from InteractiveObjects.Video_downloader import *
 from InteractiveObjects.Video_player import VideoPlayer
+from InteractiveObjects.ScheduleViewer import ScheduleViewer
+from InteractiveObjects.OwnerViewer import OwnerViewer
 
 class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, client : Client):
@@ -39,6 +41,42 @@ class GraphicBillboard(QGraphicsRectItem):
 
         self.setAcceptHoverEvents(True)
         self.setAcceptTouchEvents(True)
+        self.setFlag(QGraphicsObject.ItemIsSelectable, True)
+
+    
+    def contextMenuEvent(self, event: QGraphicsSceneContextMenuEvent):
+        menu = QMenu()
+        
+        show_group_action = QAction("Show owner", None)
+        show_schedules_action = QAction("Show schedules", None)
+        watch_ad_action = QAction("Watch ad", None)
+
+        show_group_action.triggered.connect(self.show_owner)
+        show_schedules_action.triggered.connect(self.show_schedules)
+        watch_ad_action.triggered.connect(self.watch_ad)
+
+        menu.addAction(show_group_action)
+        menu.addAction(show_schedules_action)
+        menu.addAction(watch_ad_action)
+
+        menu.exec(event.screenPos())
+
+
+    def show_owner(self):
+        groop_owner_request = f"GET GROOP BY OWNER owner = {self.billboard.owner_name}"
+        groop_owner_repsnose = self.client.Get_response(groop_owner_request)
+
+        self.ownerViewer = OwnerViewer(self.billboard.owner_name, groop_owner_repsnose, self.billboard.billboards_groop_name)
+        self.ownerViewer.show()
+
+
+    def show_schedules(self):
+        self.schedulesViewer = ScheduleViewer(self.schedules, self.current_ad)
+        self.schedulesViewer.show()
+
+
+    def watch_ad(self):
+        self.get_video()
 
 
     def hoverEnterEvent(self, event):

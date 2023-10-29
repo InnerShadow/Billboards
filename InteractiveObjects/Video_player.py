@@ -8,7 +8,8 @@ class VideoPlayer:
     def __init__(self, video_url : str):
         self.video_url = video_url
 
-    def play(self, start_time = 0):
+
+    def play(self, start_time : int):
         video = VideoFileClip(self.video_url)
 
         pygame.init()
@@ -21,7 +22,7 @@ class VideoPlayer:
 
         audio = video.audio
 
-        pygame.mixer.init(frequency = audio.fps, size = -16, channels=audio.nchannels)
+        pygame.mixer.init(frequency = audio.fps, size = -16, channels = audio.nchannels)
 
         with tempfile.NamedTemporaryFile(delete = False, suffix = ".mp3") as temp_audio_file:
             audio.write_audiofile(temp_audio_file.name)
