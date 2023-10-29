@@ -19,6 +19,9 @@ class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, client : Client):
         super().__init__(x, y, w, h)
 
+        self.x_pos = x
+        self.y_pos = y
+
         self.billboard = billboard
         self.client = client
 
@@ -125,7 +128,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
     def get_video(self):
         if not os.path.exists(self.current_ad.vidio_url):
-            self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.client)
+            self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.client, self.x_pos, self.y_pos)
             self.video_downloader.finished.connect(self.on_download_finished)
             self.video_downloader.start()
 

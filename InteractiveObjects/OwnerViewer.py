@@ -2,7 +2,7 @@ import re
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QListWidget, QListWidgetItem, QApplication
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QListWidget, QListWidgetItem
 
 class OwnerViewer(QWidget):
     def __init__(self, owner_name: str, response : str, billboards_groop_name : str):
