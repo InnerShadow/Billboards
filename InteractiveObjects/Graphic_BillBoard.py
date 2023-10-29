@@ -5,9 +5,6 @@ from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from PyQt5.QtMultimediaWidgets import QVideoWidget
-from PyQt5.QtCore import QUrl
 
 from Entity.Billboard import *
 from ServerData.Client import *
@@ -94,9 +91,8 @@ class GraphicBillboard(QGraphicsRectItem):
 
     def on_download_finished(self):
         self.video_player = VideoPlayer(self.current_ad.vidio_url)
-        #self.video_player.play()
-        playback_thread = threading.Thread(target = self.video_player.play)
+        time_diffrence = datetime.now() - self.init_time
+        playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence.total_seconds(),))
         playback_thread.start()
-        #self.video_player.show()
-        #self.video_player.play_video()
+
 
