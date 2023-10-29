@@ -24,7 +24,11 @@ class Client:
         finally:
             client.close()
 
-        return response.decode('utf-8')
+        if 'GET AD' in request:
+            return response
+
+        else:
+            return response.decode('utf-8')
     
 
     def get_ip_address(self):

@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
 
 
     def initClient(self):
-        self.client = Client('127.0.0.2', 2000)
+        self.client = Client('127.0.0.6', 2000)
         #print(self.client.get_ip_address())
 
 

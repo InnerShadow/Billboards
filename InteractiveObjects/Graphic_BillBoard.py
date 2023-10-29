@@ -29,16 +29,23 @@ class GraphicBillboard(QGraphicsRectItem):
         self.setToolTip(self.getToolTip())
 
         self.setAcceptHoverEvents(True)
+        self.setAcceptTouchEvents(True)
 
 
     def hoverEnterEvent(self, event):
         self.setToolTip(self.getToolTip())
         super().hoverEnterEvent(event)
+
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.get_video()
+        super().mousePressEvent(event)
     
     
     def getToolTip(self):
 
-        current_ad = None
+        self.current_ad = None
 
         tmp_init = self.init_time
 
@@ -47,7 +54,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
         while tmp_init < start_point:
             for ad in self.schedules.ad_queue:
-                current_ad = ad.ad_name
+                self.current_ad = ad
                 delta_time = timedelta(seconds = ad.ad_duration)
                 tmp_init += delta_time
 
@@ -57,9 +64,20 @@ class GraphicBillboard(QGraphicsRectItem):
 
             if if_break:
                 break
+
+            self.init_time = tmp_init
     
 
-        text = f"""Group: {self.billboard.billboards_groop_name};\nOwner: {self.billboard.owner_name};\nSchedules: {self.billboard.schedules_name};\nCurrent ad: {current_ad}."""
+        text = f"""Group: {self.billboard.billboards_groop_name};\nOwner: {self.billboard.owner_name};\nSchedules: {self.billboard.schedules_name};\nCurrent ad: {self.current_ad.ad_name}."""
         
         return text
 
+
+    def get_video(self):
+        ad_request = f"GET AD ad_path = {self.current_ad.vidio_url}"
+        ad_repsnose = self.client.Get_response(ad_request)
+
+        with open(self.current_ad.vidio_url, 'wb') as file:
+            file.write(ad_repsnose)
+
+        pass

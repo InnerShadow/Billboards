@@ -6,7 +6,6 @@ class Schedules:
 
     def __init__(self, schedules_name : str):
         self.schedules_name = schedules_name
-
         self.ad_queue : list[Ad] = []
         
 

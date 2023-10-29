@@ -8,7 +8,6 @@ class BillBoard_groop:
     def __init__(self, groop_name : str, schedules : Schedules):
         self.groop_name = groop_name
         self.schedules = schedules
-
         self.BillBoards : list[BillBoard] = []
         
 
