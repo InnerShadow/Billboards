@@ -54,6 +54,7 @@ class GraphicBillboard(QGraphicsRectItem):
         self.current_ad = None
 
         tmp_init = self.init_time
+        self.start_play_time = self.init_time
 
         start_point = datetime.now()
         if_break = False
@@ -63,6 +64,7 @@ class GraphicBillboard(QGraphicsRectItem):
                 self.current_ad = ad
                 delta_time = timedelta(seconds = ad.ad_duration)
                 tmp_init += delta_time
+                self.start_play_time += delta_time
 
                 if tmp_init > start_point:
                     if_break = True
@@ -91,8 +93,10 @@ class GraphicBillboard(QGraphicsRectItem):
 
     def on_download_finished(self):
         self.video_player = VideoPlayer(self.current_ad.vidio_url)
-        time_diffrence = datetime.now() - self.init_time
-        playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence.total_seconds(),))
+        diffrence = self.start_play_time - datetime.now()
+        seconds_diffrens = diffrence.total_seconds()
+        time_diffrence = self.current_ad.ad_duration - int(seconds_diffrens)
+        print(time_diffrence)
+        playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence, ))
         playback_thread.start()
-
 
