@@ -165,7 +165,7 @@ class MainWindow(QMainWindow):
     def show_login_window(self):
         self.login_window = AuthenticationWindow(self.client)
         self.login_window.show()
-        self.login_window.move( self.view.viewport().width() // 2, self.view.viewport().height() // 2)
+        self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.login_window.login_successful.connect(self.handle_login_success)
         
     

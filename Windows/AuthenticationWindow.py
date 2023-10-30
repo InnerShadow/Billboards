@@ -57,7 +57,8 @@ class AuthenticationWindow(QWidget):
             
 
     def continue_as_viewer(self):
-        print('Continue as viewer')
+        viewer_request = f"CONTINUE AS VIEWER"
+        _ = self.client.Get_response(viewer_request)
         self.hide()
 
 
