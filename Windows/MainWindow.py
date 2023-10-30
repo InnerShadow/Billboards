@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
 
 
     def initClient(self):
-        self.client = Client('127.0.0.7', 2000)
+        self.client = Client('127.0.0.15', 2000)
         #print(self.client.get_ip_address())
 
 
@@ -75,6 +75,8 @@ class MainWindow(QMainWindow):
         self.scene = QGraphicsScene()
         self.view.setScene(self.scene)
 
+        self.login_window = AuthenticationWindow(self.client)
+
         self.init_beckground()
 
         self.init_close_button()
@@ -83,14 +85,20 @@ class MainWindow(QMainWindow):
 
         self.updateGraphicsItems()
 
+        self.init_menuBar()
+
+        self.show()
+
+        self.show_login_window()
+
+
+    def init_menuBar(self):
         log_in_action = QAction('Log In', self)
         log_in_action.triggered.connect(self.show_login_window)
 
         menubar = self.menuBar()
         file_menu = menubar.addMenu('Log in')
         file_menu.addAction(log_in_action)
-
-        self.show()
 
 
     @pyqtSlot()
@@ -110,6 +118,8 @@ class MainWindow(QMainWindow):
 
         self.updateBillboards(min([bg_width, bg_height]))
 
+        self.update_login_window()
+
 
     def updateBeackground(self, bg_width : int, bg_height : int):
         self.background_item.setPixmap(self.background_image.scaled(bg_width, bg_height, Qt.KeepAspectRatio))
@@ -128,6 +138,10 @@ class MainWindow(QMainWindow):
                 graphic_billboard = GraphicBillboard(x, y, self.billboard_w, self.billboard_h, billboard, self.client)
 
                 self.scene.addItem(graphic_billboard)
+
+    
+    def update_login_window(self):
+        self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
 
 
     def clearScene(self):
@@ -149,7 +163,9 @@ class MainWindow(QMainWindow):
 
 
     def show_login_window(self):
-        self.login_window = AuthenticationWindow()
+        self.login_window = AuthenticationWindow(self.client)
+        self.login_window.show()
+        self.login_window.move( self.view.viewport().width() // 2, self.view.viewport().height() // 2)
         self.login_window.login_successful.connect(self.handle_login_success)
         
     

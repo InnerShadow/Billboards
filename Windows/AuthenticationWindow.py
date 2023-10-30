@@ -1,15 +1,16 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout
 from PyQt5.QtCore import pyqtSignal
 
+from ServerData.Client import Client
+
 class AuthenticationWindow(QWidget):
 
     login_successful = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, client : Client):
         super().__init__()
+        self.client = client
         self.init_ui()
-
-        self.show()
 
 
     def init_ui(self):
@@ -44,11 +45,16 @@ class AuthenticationWindow(QWidget):
     def log_in(self):
         username = self.username_input.text()
         password = self.password_input.text()
-        if username == 'your_username' and password == 'your_password':
+
+        idendefication_request = f"TRY TO LOG IN login = {username}, password = {password} "
+        idendefication_repsnose = self.client.Get_response(idendefication_request)
+
+        if idendefication_repsnose == "IDENDEFICATION OK":
             self.login_successful.emit('Logged in successfully')
             self.hide()
+        elif idendefication_repsnose == "IDENDEFICATION NOT OK":
+            pass
             
-
 
     def continue_as_viewer(self):
         print('Continue as viewer')
