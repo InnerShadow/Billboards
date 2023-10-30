@@ -9,6 +9,7 @@ from ServerData.Client import *
 from Entity.BillBoard_groop import *
 from InteractiveObjects.Graphic_BillBoard import *
 from Entity.Schedules import *
+from Windows.AuthenticationWindow import AuthenticationWindow
 
 class MainWindow(QMainWindow):
 
@@ -82,6 +83,13 @@ class MainWindow(QMainWindow):
 
         self.updateGraphicsItems()
 
+        log_in_action = QAction('Log In', self)
+        log_in_action.triggered.connect(self.show_login_window)
+
+        menubar = self.menuBar()
+        file_menu = menubar.addMenu('Log in')
+        file_menu.addAction(log_in_action)
+
         self.show()
 
 
@@ -108,7 +116,7 @@ class MainWindow(QMainWindow):
 
 
     def updateCloseButton(self, bg_width : int):
-        self.close_button.setGeometry(bg_width - 80, 10, self.close_button.width(), self.close_button.height())
+        self.close_button.setGeometry(bg_width - 78, 32, self.close_button.width(), self.close_button.height())
 
 
     def updateBillboards(self, min_size : int):
@@ -138,4 +146,13 @@ class MainWindow(QMainWindow):
     def init_close_button(self):
         self.close_button = QPushButton('Exit', self)
         self.close_button.clicked.connect(self.close)
+
+
+    def show_login_window(self):
+        self.login_window = AuthenticationWindow()
+        self.login_window.login_successful.connect(self.handle_login_success)
+        
+    
+    def handle_login_success(self, message):
+        print(message)
 
