@@ -1,4 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import pyqtSignal
 
 from ServerData.Client import Client
@@ -13,7 +14,6 @@ class AuthenticationWindow(QWidget):
         super().__init__()
         self.client = client
         self.init_ui()
-
 
     def init_ui(self):
         self.setWindowTitle('Authentication')
@@ -34,42 +34,58 @@ class AuthenticationWindow(QWidget):
         self.continue_button = QPushButton('Continue as Viewer')
         self.continue_button.clicked.connect(self.continue_as_viewer)
 
-        layout.addWidget(self.username_label)
-        layout.addWidget(self.username_input)
-        layout.addWidget(self.password_label)
-        layout.addWidget(self.password_input)
-        layout.addWidget(self.login_button)
-        layout.addWidget(self.continue_button)
+        self.password_input.returnPressed.connect(self.log_in)
+
+        form_layout = QVBoxLayout()
+        form_layout.addWidget(self.username_label)
+        form_layout.addWidget(self.username_input)
+        form_layout.addWidget(self.password_label)
+        form_layout.addWidget(self.password_input)
+
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.login_button)
+        button_layout.addWidget(self.continue_button)
+
+        layout.addLayout(form_layout)
+        layout.addLayout(button_layout)
 
         self.setLayout(layout)
 
-
     def log_in(self):
+        
         username = self.username_input.text()
         password = self.password_input.text()
 
-        idendefication_request = f"TRY TO LOG IN login = {username}, password = {password} "
-        idendefication_repsnose = self.client.Get_response(idendefication_request)
+        if username and password: 
+            idendefication_request = f"TRY TO LOG IN login = {username}, password = {password}"
+            idendefication_repsnose = self.client.Get_response(idendefication_request)
 
-        if idendefication_repsnose == "IDENDEFICATION OK":
-            self.hide()
+            if idendefication_repsnose == "IDENDEFICATION OK":
+                self.hide()
+                self.success_dialog = AuthenticationSuccessDialog(username)
+                self.success_dialog.show()
+                self.login_successful.emit(f'Logged in successfully username = {username}')
+            elif idendefication_repsnose == 'IDENTIFICATION NOT OK':
+                self.failure_dialog = AuthenticationFailureDialog()
+                self.failure_dialog.show()
+                self.highlight_fields()
 
-            self.success_dialog = AuthenticationSuccessDialog(username)
-            self.success_dialog.show()
-            self.login_successful.emit(f'Logged in successfully username = {username}')
-        elif idendefication_repsnose == 'IDENTIFICATION NOT OK':
-            print("AAAAAAAAAAAAa")
+        else:
             self.failure_dialog = AuthenticationFailureDialog()
             self.failure_dialog.show()
-            
+            self.highlight_fields()
+
 
     def continue_as_viewer(self):
         viewer_request = f"CONTINUE AS VIEWER"
         _ = self.client.Get_response(viewer_request)
-
         self.hide()
-
         self.success_dialog = AuthenticationSuccessDialog('viewer')
         self.success_dialog.show()
         self.login_successful.emit(f'Logged in successfully username = VIEWER')
 
+
+    def highlight_fields(self):
+        style = "QLineEdit { background-color: #FF9999; }"
+        self.username_input.setStyleSheet(style)
+        self.password_input.setStyleSheet(style)
