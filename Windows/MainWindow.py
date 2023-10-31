@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
 
 
     def initClient(self):
-        self.client = Client('127.0.0.15', 2000)
+        self.client = Client('127.0.0.1', 2000)
         #print(self.client.get_ip_address())
 
 
@@ -141,6 +141,7 @@ class MainWindow(QMainWindow):
 
     
     def update_login_window(self):
+        print(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
 
 

@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout
 from PyQt5.QtCore import pyqtSignal
 
 from ServerData.Client import Client
+from InteractiveObjects.AuthenticationFailureDialog import AuthenticationFailureDialog
+from InteractiveObjects.AuthenticationSuccessDialog import AuthenticationSuccessDialog
 
 class AuthenticationWindow(QWidget):
 
@@ -50,15 +52,24 @@ class AuthenticationWindow(QWidget):
         idendefication_repsnose = self.client.Get_response(idendefication_request)
 
         if idendefication_repsnose == "IDENDEFICATION OK":
-            self.login_successful.emit('Logged in successfully')
             self.hide()
-        elif idendefication_repsnose == "IDENDEFICATION NOT OK":
-            pass
+            
+            self.success_dialog = AuthenticationSuccessDialog(username)
+            self.success_dialog.show()
+            self.login_successful.emit(f'Logged in successfully username = {username}')
+        elif idendefication_repsnose == 'IDENTIFICATION NOT OK':
+            print("AAAAAAAAAAAAa")
+            self.failure_dialog = AuthenticationFailureDialog()
+            self.failure_dialog.show()
             
 
     def continue_as_viewer(self):
         viewer_request = f"CONTINUE AS VIEWER"
         _ = self.client.Get_response(viewer_request)
+
         self.hide()
 
+        self.success_dialog = AuthenticationSuccessDialog('viewer')
+        self.success_dialog.show()
+        self.login_successful.emit(f'Logged in successfully username = VIEWER')
 
