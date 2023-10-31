@@ -12,7 +12,7 @@ class OwnerViewer(QWidget):
         self.billboards_groop_name = billboards_groop_name
 
         self.setWindowTitle("Owner Viewer")
-        self.setGeometry(250, 100, 500, 500)
+        self.setGeometry(250, 100, 380, 380)
 
         self.groops : list[str] = []
         self.counts : list[int] = []

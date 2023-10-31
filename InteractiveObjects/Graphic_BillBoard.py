@@ -70,11 +70,13 @@ class GraphicBillboard(QGraphicsRectItem):
         groop_owner_repsnose = self.client.Get_response(groop_owner_request)
 
         self.ownerViewer = OwnerViewer(self.billboard.owner_name, groop_owner_repsnose, self.billboard.billboards_groop_name)
+        self.ownerViewer.move(self.x_pos, self.y_pos)
         self.ownerViewer.show()
 
 
     def show_schedules(self):
         self.schedulesViewer = ScheduleViewer(self.schedules, self.current_ad)
+        self.schedulesViewer.move(self.x_pos, self.y_pos)
         self.schedulesViewer.show()
 
 

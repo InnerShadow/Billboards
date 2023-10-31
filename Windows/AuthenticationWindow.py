@@ -63,15 +63,18 @@ class AuthenticationWindow(QWidget):
             if idendefication_repsnose == "IDENDEFICATION OK":
                 self.hide()
                 self.success_dialog = AuthenticationSuccessDialog(username)
+                self.success_dialog.move(self.x(), self.y())
                 self.success_dialog.show()
                 self.login_successful.emit(f'Logged in successfully username = {username}')
             elif idendefication_repsnose == 'IDENTIFICATION NOT OK':
                 self.failure_dialog = AuthenticationFailureDialog()
+                self.failure_dialog.move(self.x(), self.y())
                 self.failure_dialog.show()
                 self.highlight_fields()
 
         else:
             self.failure_dialog = AuthenticationFailureDialog()
+            self.failure_dialog.move(self.x(), self.y())
             self.failure_dialog.show()
             self.highlight_fields()
 
@@ -81,6 +84,7 @@ class AuthenticationWindow(QWidget):
         _ = self.client.Get_response(viewer_request)
         self.hide()
         self.success_dialog = AuthenticationSuccessDialog('viewer')
+        self.success_dialog.move(self.x(), self.y())
         self.success_dialog.show()
         self.login_successful.emit(f'Logged in successfully username = VIEWER')
 
@@ -89,3 +93,4 @@ class AuthenticationWindow(QWidget):
         style = "QLineEdit { background-color: #FF9999; }"
         self.username_input.setStyleSheet(style)
         self.password_input.setStyleSheet(style)
+
