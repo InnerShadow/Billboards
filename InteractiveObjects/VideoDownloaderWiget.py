@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QProgressBar
 
 class VideoDownloaderWiget(QWidget):
@@ -21,6 +22,9 @@ class VideoDownloaderWiget(QWidget):
         layout.addWidget(self.progress_label)
         layout.addWidget(self.progress_bar)
         self.setLayout(layout)
+
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.activateWindow()
 
 
     def finish_work(self):

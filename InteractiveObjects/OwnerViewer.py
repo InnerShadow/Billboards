@@ -43,6 +43,9 @@ class OwnerViewer(QWidget):
 
         self.setLayout(layout)
 
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.activateWindow()
+
 
     def deparse_response(self, response : str):
         response += " "

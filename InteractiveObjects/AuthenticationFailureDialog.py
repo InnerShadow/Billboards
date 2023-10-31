@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QDialog, QLabel, QPushButton, QVBoxLayout
 
 class AuthenticationFailureDialog(QDialog):
@@ -21,4 +22,7 @@ class AuthenticationFailureDialog(QDialog):
         layout.addWidget(ok_button)
 
         self.setLayout(layout)
+
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.activateWindow()
 

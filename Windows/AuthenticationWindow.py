@@ -53,7 +53,7 @@ class AuthenticationWindow(QWidget):
 
         if idendefication_repsnose == "IDENDEFICATION OK":
             self.hide()
-            
+
             self.success_dialog = AuthenticationSuccessDialog(username)
             self.success_dialog.show()
             self.login_successful.emit(f'Logged in successfully username = {username}')

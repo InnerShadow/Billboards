@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QWidget
 from PyQt5.QtGui import QColor
 
@@ -29,4 +30,8 @@ class ScheduleViewer(QWidget):
 
             if ad == self.current_ad:
                 item.setForeground(QColor(255, 0, 0))
+
+
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.activateWindow()
 
