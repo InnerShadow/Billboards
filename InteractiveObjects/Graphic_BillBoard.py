@@ -5,10 +5,11 @@ from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QBrush, QColor
+from PyQt5.QtGui import QBrush, QColor, QPen
 
 from Entity.Billboard import *
 from ServerData.Client import *
+from Entity.User import User
 from Entity.Schedules import *
 from InteractiveObjects.Video_downloader import *
 from InteractiveObjects.Video_player import VideoPlayer
@@ -16,24 +17,34 @@ from InteractiveObjects.ScheduleViewer import ScheduleViewer
 from InteractiveObjects.OwnerViewer import OwnerViewer
 
 class GraphicBillboard(QGraphicsRectItem):
-    def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, client : Client):
+    def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, user : User):
         super().__init__(x, y, w, h)
 
         self.x_pos = x
         self.y_pos = y
 
         self.billboard = billboard
-        self.client = client
+        self.user = user
 
-        init_time = datetime.fromisoformat(self.client.Get_response("GET_TIME"))
+        self.init_ui()
+
+    
+    def init_ui(self):
+
+        init_time = datetime.fromisoformat(self.user.client.Get_response("GET_TIME"))
 
         schedules_request = f"GET GROUP SCHEDULES schedules_name = {self.billboard.schedules_name}"
-        schedules_repsnose = self.client.Get_response(schedules_request)
+        schedules_repsnose = self.user.client.Get_response(schedules_request)
 
         self.schedules = Schedules(self.billboard.schedules_name)
         self.schedules.fill_from_response(schedules_repsnose)
 
         self.init_time = init_time
+
+        if self.billboard.owner_name == self.user.login:
+            red_pen = QPen(QColor(255, 0, 0, 128)) 
+            red_pen.setWidth(3)
+            self.setPen(red_pen)
 
         brush = QBrush(QColor(0, 0, 0, int(255 * 3 / 4)))
         self.setBrush(brush)
@@ -67,7 +78,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
     def show_owner(self):
         groop_owner_request = f"GET GROOP BY OWNER owner = {self.billboard.owner_name}"
-        groop_owner_repsnose = self.client.Get_response(groop_owner_request)
+        groop_owner_repsnose = self.user.client.Get_response(groop_owner_request)
 
         self.ownerViewer = OwnerViewer(self.billboard.owner_name, groop_owner_repsnose, self.billboard.billboards_groop_name)
         self.ownerViewer.move(self.x_pos, self.y_pos)
@@ -130,7 +141,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
     def get_video(self):
         if not os.path.exists(self.current_ad.vidio_url):
-            self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.client, self.x_pos, self.y_pos)
+            self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.user.client, self.x_pos, self.y_pos)
             self.video_downloader.finished.connect(self.on_download_finished)
             self.video_downloader.start()
 

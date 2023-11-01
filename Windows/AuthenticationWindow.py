@@ -1,4 +1,5 @@
-from PyQt5.QtCore import Qt
+import re
+
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import pyqtSignal
 
@@ -60,12 +61,19 @@ class AuthenticationWindow(QWidget):
             idendefication_request = f"TRY TO LOG IN login = {username}, password = {password}"
             idendefication_repsnose = self.client.Get_response(idendefication_request)
 
-            if idendefication_repsnose == "IDENDEFICATION OK":
+            autendeficated_pattern = r'IDENDEFICATION OK role = (\w+) '
+            autendeficated_matches = re.search(autendeficated_pattern, idendefication_repsnose)
+
+            if autendeficated_matches:
                 self.hide()
+
+                role = autendeficated_matches.group(1)
+
                 self.success_dialog = AuthenticationSuccessDialog(username)
                 self.success_dialog.move(self.x(), self.y())
                 self.success_dialog.show()
-                self.login_successful.emit(f'Logged in successfully username = {username}')
+                self.login_successful.emit(f'Logged in successfully username = {username}, role = {role}')
+
             elif idendefication_repsnose == 'IDENTIFICATION NOT OK':
                 self.failure_dialog = AuthenticationFailureDialog()
                 self.failure_dialog.move(self.x(), self.y())
@@ -86,7 +94,7 @@ class AuthenticationWindow(QWidget):
         self.success_dialog = AuthenticationSuccessDialog('viewer')
         self.success_dialog.move(self.x(), self.y())
         self.success_dialog.show()
-        self.login_successful.emit(f'Logged in successfully username = VIEWER')
+        self.login_successful.emit(f'Logged in successfully username = VIEWER, role = viewer')
 
 
     def highlight_fields(self):

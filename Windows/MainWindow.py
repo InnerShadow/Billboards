@@ -9,6 +9,7 @@ from ServerData.Client import *
 from Entity.BillBoard_groop import *
 from InteractiveObjects.Graphic_BillBoard import *
 from Entity.Schedules import *
+from Entity.User import User
 from Windows.AuthenticationWindow import AuthenticationWindow
 
 class MainWindow(QMainWindow):
@@ -27,20 +28,20 @@ class MainWindow(QMainWindow):
 
 
     def initClient(self):
-        self.client = Client('127.0.0.1', 2000)
-        #print(self.client.get_ip_address())
+        self.user = User()
+        #print(self.user.client.get_ip_address())
 
 
     def initBillboards(self):
         groop_pattern = r'Group: ([\w\s_]+), Owner: [\w\s_]+, Schedule: ([\w\s_]+)'
-        groop_response = self.client.Get_response('GET_BILLBOARDS')
+        groop_response = self.user.client.Get_response('GET_BILLBOARDS')
 
         for match in re.finditer(groop_pattern, groop_response):
             groop_name = match.group(1)
             schedules_name = match.group(2)
 
             schedules_request = f"GET GROUP SCHEDULES schedules_name = {schedules_name}"
-            schedules_repsnose = self.client.Get_response(schedules_request)
+            schedules_repsnose = self.user.client.Get_response(schedules_request)
 
             if_add = True
 
@@ -75,7 +76,7 @@ class MainWindow(QMainWindow):
         self.scene = QGraphicsScene()
         self.view.setScene(self.scene)
 
-        self.login_window = AuthenticationWindow(self.client)
+        self.login_window = AuthenticationWindow(self.user.client)
 
         self.init_beckground()
 
@@ -126,7 +127,7 @@ class MainWindow(QMainWindow):
 
 
     def updateCloseButton(self, bg_width : int):
-        self.close_button.setGeometry(bg_width - 78, 32, self.close_button.width(), self.close_button.height())
+        self.close_button.setGeometry(bg_width - 90, 32, self.close_button.width(), self.close_button.height())
 
 
     def updateBillboards(self, min_size : int):
@@ -135,7 +136,7 @@ class MainWindow(QMainWindow):
                 x = int(billboard.x_pos * min_size)
                 y = int(billboard.y_pos * min_size)
 
-                graphic_billboard = GraphicBillboard(x, y, self.billboard_w, self.billboard_h, billboard, self.client)
+                graphic_billboard = GraphicBillboard(x, y, self.billboard_w, self.billboard_h, billboard, self.user)
 
                 self.scene.addItem(graphic_billboard)
 
@@ -164,12 +165,16 @@ class MainWindow(QMainWindow):
 
 
     def show_login_window(self):
-        self.login_window = AuthenticationWindow(self.client)
+        self.login_window = AuthenticationWindow(self.user.client)
         self.login_window.show()
         self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.login_window.login_successful.connect(self.handle_login_success)
         
     
-    def handle_login_success(self, message):
-        print(message)
+    def handle_login_success(self, response : str):
+        login_patter = r'Logged in successfully username = (\w+), role = (\w+)'
+        login_match = re.search(login_patter, response)
+        self.user.login = login_match.group(1)
+        self.user.role = login_match.group(2)
+        self.updateGraphicsItems()
 
