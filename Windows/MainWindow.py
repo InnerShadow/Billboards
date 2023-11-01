@@ -26,9 +26,13 @@ class MainWindow(QMainWindow):
         self.initBillboards()
         self.initUI()
 
+        self.show()
+
+        self.show_login_window()
+
 
     def initClient(self):
-        self.user = User()
+        self.user = User('viewer', 'viewer')
         #print(self.user.client.get_ip_address())
 
 
@@ -87,10 +91,6 @@ class MainWindow(QMainWindow):
         self.updateGraphicsItems()
 
         self.init_menuBar()
-
-        self.show()
-
-        self.show_login_window()
 
 
     def init_menuBar(self):

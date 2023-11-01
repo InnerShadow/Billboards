@@ -1,5 +1,6 @@
 import re
 
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QVBoxLayout, QHBoxLayout
 from PyQt5.QtCore import pyqtSignal
 
@@ -15,6 +16,7 @@ class AuthenticationWindow(QWidget):
         super().__init__()
         self.client = client
         self.init_ui()
+
 
     def init_ui(self):
         self.setWindowTitle('Authentication')
@@ -51,9 +53,11 @@ class AuthenticationWindow(QWidget):
         layout.addLayout(button_layout)
 
         self.setLayout(layout)
+        # self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        # self.activateWindow()
 
-    def log_in(self):
-        
+
+    def log_in(self):    
         username = self.username_input.text()
         password = self.password_input.text()
 
