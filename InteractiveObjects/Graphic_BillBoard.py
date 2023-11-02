@@ -80,7 +80,7 @@ class GraphicBillboard(QGraphicsRectItem):
         groop_owner_request = f"GET GROOP BY OWNER owner = {self.billboard.owner_name}"
         groop_owner_repsnose = self.user.client.Get_response(groop_owner_request)
 
-        self.ownerViewer = OwnerViewer(self.billboard.owner_name, groop_owner_repsnose, self.billboard.billboards_groop_name)
+        self.ownerViewer = OwnerViewer(self.billboard.owner_name, groop_owner_repsnose, self.billboard.billboards_groop_name, self.user)
         self.ownerViewer.move(self.x_pos, self.y_pos)
         self.ownerViewer.show()
 
