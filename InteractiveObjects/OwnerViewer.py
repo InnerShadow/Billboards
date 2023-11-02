@@ -100,8 +100,6 @@ class OwnerViewer(QWidget):
 
 
     def createInfo(self):
-        self.clearInfo()
-
         layout = self.layout()
 
         owner_label = QLabel(f"<b><font size='6'>{self.owner_name}</font></b>")
