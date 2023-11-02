@@ -80,4 +80,46 @@ class OwnerViewer(QWidget):
         self.transferWiget.move(self.x(), self.y())
         self.transferWiget.show()
 
+        self.transferWiget.transer_signal.connect(self.updateInfo)
+
+    
+    def updateInfo(self, new_owner_name: str):
+        self.owner_name = new_owner_name
+        self.clearInfo()
+        self.createInfo()
+
+
+    def clearInfo(self):
+        layout = self.layout()
+        if layout is not None:
+            while layout.count():
+                item = layout.takeAt(0)
+                widget = item.widget()
+                if widget:
+                    widget.deleteLater()
+
+
+    def createInfo(self):
+        self.clearInfo()
+
+        layout = self.layout()
+
+        owner_label = QLabel(f"<b><font size='6'>{self.owner_name}</font></b>")
+        owner_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(owner_label)
+
+        groups_list = QListWidget(self)
+        layout.addWidget(groups_list)
+
+        for group_name, billboard_count in zip(self.groops, self.counts):
+            item = QListWidgetItem(f"Group: {group_name}, Num of billboards: {billboard_count}")
+            groups_list.addItem(item)
+
+            if self.billboards_groop_name == group_name:
+                item.setForeground(QColor(255, 0, 0))
+
+            if self.user.role == 'admin' or self.owner_name == self.user.login:
+                groups_list.setContextMenuPolicy(Qt.CustomContextMenu)
+                groups_list.customContextMenuRequested.connect(self.show_context_menu)
+
 

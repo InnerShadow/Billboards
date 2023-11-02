@@ -3,10 +3,14 @@ from functools import partial
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QCompleter, QDialog, QPushButton, QMessageBox
+from PyQt5.QtCore import pyqtSignal
 
 from Entity.User import User
 
 class TransferOwnershipWiget(QWidget):
+
+    transer_signal = pyqtSignal(str)
+
     def __init__(self, user: User, billboards_group : str):
         super().__init__()
 
@@ -91,12 +95,13 @@ class TransferOwnershipWiget(QWidget):
         dialog.exec_()
 
 
-    def confirm_transfer_ownership(self, selected_user, dialog):
+    def confirm_transfer_ownership(self, selected_user : str, dialog):
         if selected_user in self.user_list:
             transfer_request = f"TRANSFER OWNERSHIP OF {self.billboards_group} TO {selected_user}"
             _ = self.user.client.Get_response(transfer_request)
             self.show_success_message('Ownership transferred successfully.')
             dialog.accept()
+            self.transer_signal.emit(selected_user)
             self.hide()
 
         else:
