@@ -1,14 +1,17 @@
-
 from PyQt5.QtWidgets import QVBoxLayout, QListWidget, QDialog, QDialogButtonBox, QLineEdit
+from Entity.User import User
 
 class InsertAdDialog(QDialog):
-    def __init__(self, advertisement_names):
+    def __init__(self, advertisement_names : list[str], user : User):
         super().__init__()
 
+        self.user = user
         self.advertisement_names = advertisement_names
         self.selected_ad = None
 
         self.init_ui()
+        self.show()
+
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -46,8 +49,8 @@ class InsertAdDialog(QDialog):
 
 
     @staticmethod
-    def get_selected_advertisement(advertisement_names):
-        dialog = InsertAdDialog(advertisement_names)
+    def get_selected_advertisement(advertisement_names : str, user : User):
+        dialog = InsertAdDialog(advertisement_names, user)
         dialog.ad_list.itemActivated.connect(dialog.select_advertisement)
         result = dialog.exec_()
         return dialog.selected_ad, result == QDialog.Accepted

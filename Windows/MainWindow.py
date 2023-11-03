@@ -11,6 +11,7 @@ from InteractiveObjects.Graphic_BillBoard import *
 from Entity.Schedules import *
 from Entity.User import User
 from Windows.AuthenticationWindow import AuthenticationWindow
+from InteractiveObjects.ScheduleComposer import ScheduleComposer
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -101,7 +102,7 @@ class MainWindow(QMainWindow):
 
     def init_createSchedules(self):
         self.create_schedules_button = QPushButton('Create schedules', self)
-        self.create_schedules_button.clicked.connect(self.show_message)
+        self.create_schedules_button.clicked.connect(self.showScheduleComposer)
 
 
     @pyqtSlot()
@@ -151,8 +152,10 @@ class MainWindow(QMainWindow):
         self.create_schedules_button.setGeometry(self.view.viewport().width() - 130, self.view.viewport().height() // 2, self.create_schedules_button.width() + 20, self.create_schedules_button.height())
 
 
-    def show_message(self):
-        print("Sukaaa")
+    def showScheduleComposer(self):
+        self.scheduleComposer = ScheduleComposer(self.user)
+        self.scheduleComposer.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        self.scheduleComposer.show()
 
 
     def clearScene(self):
