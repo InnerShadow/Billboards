@@ -42,8 +42,8 @@ class OwnerViewer(QWidget):
             item = QListWidgetItem(f"Group: {group_name}, Num of billboards: {billboard_count}")
             groups_list.addItem(item)
 
-            if self.billboards_groop_name == group_name:
-                item.setForeground(QColor(255, 0, 0))
+            if self.billboards_groop_name != group_name:
+                item.setForeground(QColor(128, 128, 128))
 
         self.setLayout(layout)
 
@@ -113,8 +113,8 @@ class OwnerViewer(QWidget):
             item = QListWidgetItem(f"Group: {group_name}, Num of billboards: {billboard_count}")
             groups_list.addItem(item)
 
-            if self.billboards_groop_name == group_name:
-                item.setForeground(QColor(255, 0, 0))
+            if self.billboards_groop_name != group_name:
+                item.setForeground(QColor(128, 128, 128))
 
             if self.user.role == 'admin' or self.owner_name == self.user.login:
                 groups_list.setContextMenuPolicy(Qt.CustomContextMenu)

@@ -28,8 +28,8 @@ class ScheduleViewer(QWidget):
             item = QListWidgetItem(f"Ad Name: {ad.ad_name}, Duration: {ad.ad_duration} seconds")
             list_widget.addItem(item)
 
-            if ad == self.current_ad:
-                item.setForeground(QColor(255, 0, 0))
+            if ad != self.current_ad:
+                item.setForeground(QColor(128, 128, 128))
 
 
         self.setWindowFlags(Qt.WindowStaysOnTopHint)

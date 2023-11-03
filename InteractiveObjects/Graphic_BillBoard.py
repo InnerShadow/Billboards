@@ -47,14 +47,11 @@ class GraphicBillboard(QGraphicsRectItem):
             red_pen = QPen(QColor(255, 0, 0)) 
             red_pen.setWidth(6)
             self.setPen(red_pen)
-            
+
         else:
             black_pen = QPen(QColor(0, 0, 0)) 
             black_pen.setWidth(6)
             self.setPen(black_pen)
-
-        brush = QBrush(QColor(0, 0, 0, 0))
-        self.setBrush(brush)
 
         self.setToolTip(self.getToolTip())
         self.set_background_image()

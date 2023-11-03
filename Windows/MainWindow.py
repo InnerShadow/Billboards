@@ -120,7 +120,7 @@ class MainWindow(QMainWindow):
         self.updateBillboards(min([bg_width, bg_height]))
         self.update_login_window()
 
-        if self.user.role == 'owner':
+        if self.user.role == 'owner' or self.user.role == 'admin':
             self.update_create_schedules()
 
 
@@ -189,7 +189,7 @@ class MainWindow(QMainWindow):
         self.user.login = login_match.group(1)
         self.user.role = login_match.group(2)
 
-        if self.user.role == 'owner':
+        if self.user.role == 'owner' or self.user.role == 'admin':
             self.create_schedules_button.show()
         
         self.updateGraphicsItems()
