@@ -42,7 +42,7 @@ class GraphicBillboard(QGraphicsRectItem):
         self.init_time = init_time
 
         if self.billboard.owner_name == self.user.login:
-            red_pen = QPen(QColor(255, 0, 0, 128)) 
+            red_pen = QPen(QColor(255, 0, 0)) 
             red_pen.setWidth(3)
             self.setPen(red_pen)
 

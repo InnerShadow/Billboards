@@ -78,7 +78,7 @@ class AuthenticationWindow(QWidget):
                 self.success_dialog.show()
                 self.login_successful.emit(f'Logged in successfully username = {username}, role = {role}')
 
-            elif idendefication_repsnose == 'IDENTIFICATION NOT OK':
+            if idendefication_repsnose == 'IDENDEFICATION NOT OK':
                 self.failure_dialog = AuthenticationFailureDialog()
                 self.failure_dialog.move(self.x(), self.y())
                 self.failure_dialog.show()

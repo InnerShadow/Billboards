@@ -13,7 +13,6 @@ from Entity.User import User
 from Windows.AuthenticationWindow import AuthenticationWindow
 
 class MainWindow(QMainWindow):
-
     billboard_w : int = 75
     billboard_h : int = 40 
 
@@ -72,10 +71,10 @@ class MainWindow(QMainWindow):
         self.central_widget = QWidget(self)
         self.setCentralWidget(self.central_widget)
 
-        layout = QVBoxLayout(self.central_widget)
+        self.windowLayout = QVBoxLayout(self.central_widget)
 
         self.view = QGraphicsView()
-        layout.addWidget(self.view)
+        self.windowLayout.addWidget(self.view)
 
         self.scene = QGraphicsScene()
         self.view.setScene(self.scene)
@@ -83,15 +82,13 @@ class MainWindow(QMainWindow):
         self.login_window = AuthenticationWindow(self.user.client)
 
         self.init_beckground()
-
         self.init_close_button()
-
         self.resizeEvent = self.handleResize
-
         self.updateGraphicsItems()
-
         self.init_menuBar()
-
+        self.init_createSchedules()
+        self.create_schedules_button.hide()
+        
 
     def init_menuBar(self):
         log_in_action = QAction('Log In', self)
@@ -100,6 +97,11 @@ class MainWindow(QMainWindow):
         menubar = self.menuBar()
         file_menu = menubar.addMenu('Log in')
         file_menu.addAction(log_in_action)
+
+
+    def init_createSchedules(self):
+        self.create_schedules_button = QPushButton('Create schedules', self)
+        self.create_schedules_button.clicked.connect(self.show_message)
 
 
     @pyqtSlot()
@@ -112,14 +114,13 @@ class MainWindow(QMainWindow):
         bg_height = self.view.viewport().height()
 
         self.updateCloseButton(bg_width)
-
         self.updateBeackground(bg_width, bg_height)
-
         self.clearScene()
-
         self.updateBillboards(min([bg_width, bg_height]))
-
         self.update_login_window()
+
+        if self.user.role == 'owner':
+            self.update_create_schedules()
 
 
     def updateBeackground(self, bg_width : int, bg_height : int):
@@ -127,7 +128,7 @@ class MainWindow(QMainWindow):
 
 
     def updateCloseButton(self, bg_width : int):
-        self.close_button.setGeometry(bg_width - 90, 32, self.close_button.width(), self.close_button.height())
+        self.close_button.setGeometry(bg_width - 90, self.view.viewport().height(), self.close_button.width(), self.close_button.height())
 
 
     def updateBillboards(self, min_size : int):
@@ -144,6 +145,14 @@ class MainWindow(QMainWindow):
     def update_login_window(self):
         print(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+
+    
+    def update_create_schedules(self):
+        self.create_schedules_button.setGeometry(self.view.viewport().width() - 130, self.view.viewport().height() // 2, self.create_schedules_button.width() + 20, self.create_schedules_button.height())
+
+
+    def show_message(self):
+        print("Sukaaa")
 
 
     def clearScene(self):
@@ -176,5 +185,9 @@ class MainWindow(QMainWindow):
         login_match = re.search(login_patter, response)
         self.user.login = login_match.group(1)
         self.user.role = login_match.group(2)
+
+        if self.user.role == 'owner':
+            self.create_schedules_button.show()
+        
         self.updateGraphicsItems()
 
