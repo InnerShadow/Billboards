@@ -144,12 +144,12 @@ class MainWindow(QMainWindow):
 
     
     def update_login_window(self):
-        print(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
 
     
     def update_create_schedules(self):
-        self.create_schedules_button.setGeometry(self.view.viewport().width() - 130, self.view.viewport().height() // 2, self.create_schedules_button.width() + 20, self.create_schedules_button.height())
+        self.create_schedules_button.setGeometry(self.view.viewport().width() - 130, self.view.viewport().height() // 2, 
+                                                 self.create_schedules_button.width() + 20, self.create_schedules_button.height())
 
 
     def showScheduleComposer(self):

@@ -1,12 +1,10 @@
 import re
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 
 from ServerData.Client import Client
-from InteractiveObjects.AuthenticationFailureDialog import AuthenticationFailureDialog
-from InteractiveObjects.AuthenticationSuccessDialog import AuthenticationSuccessDialog
 
 class AuthenticationWindow(QWidget):
 
@@ -73,31 +71,23 @@ class AuthenticationWindow(QWidget):
 
                 role = autendeficated_matches.group(1)
 
-                self.success_dialog = AuthenticationSuccessDialog(username)
-                self.success_dialog.move(self.x(), self.y())
-                self.success_dialog.show()
+                self.show_success_message(f"Logged in successfully as {username}")
                 self.login_successful.emit(f'Logged in successfully username = {username}, role = {role}')
 
             else:
-                self.failure_dialog = AuthenticationFailureDialog()
-                self.failure_dialog.move(self.x(), self.y())
-                self.failure_dialog.show()
                 self.highlight_fields()
+                self.show_error_message("Logged in failed")
 
         else:
-            self.failure_dialog = AuthenticationFailureDialog()
-            self.failure_dialog.move(self.x(), self.y())
-            self.failure_dialog.show()
             self.highlight_fields()
+            self.show_error_message("Logged in failed")
 
 
     def continue_as_viewer(self):
         viewer_request = f"CONTINUE AS VIEWER"
         _ = self.client.Get_response(viewer_request)
         self.hide()
-        self.success_dialog = AuthenticationSuccessDialog('viewer')
-        self.success_dialog.move(self.x(), self.y())
-        self.success_dialog.show()
+        self.show_success_message("Logged in successfully as viewer")
         self.login_successful.emit(f'Logged in successfully username = VIEWER, role = viewer')
 
 
@@ -105,4 +95,21 @@ class AuthenticationWindow(QWidget):
         style = "QLineEdit { background-color: #FF9999; }"
         self.username_input.setStyleSheet(style)
         self.password_input.setStyleSheet(style)
+
+
+    def show_error_message(self, message):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.setText(message)
+        error_dialog.exec_()
+
+
+    def show_success_message(self, message):
+        success_dialog = QMessageBox()
+        success_dialog.setIcon(QMessageBox.Information)
+        success_dialog.setWindowTitle("Success")
+        success_dialog.setText(message)
+        success_dialog.exec_()
+
 
