@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QBrush, QColor, QPen
+from PyQt5.QtGui import QBrush, QColor, QPen, QPixmap
 
 from Entity.Billboard import *
 from ServerData.Client import *
@@ -20,8 +20,10 @@ class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, user : User):
         super().__init__(x, y, w, h)
 
-        self.x_pos = x
+        self.x_pos = x + 2
         self.y_pos = y
+        self.w = w
+        self.h = h
 
         self.billboard = billboard
         self.user = user
@@ -43,13 +45,19 @@ class GraphicBillboard(QGraphicsRectItem):
 
         if self.billboard.owner_name == self.user.login:
             red_pen = QPen(QColor(255, 0, 0)) 
-            red_pen.setWidth(3)
+            red_pen.setWidth(6)
             self.setPen(red_pen)
+            
+        else:
+            black_pen = QPen(QColor(0, 0, 0)) 
+            black_pen.setWidth(6)
+            self.setPen(black_pen)
 
-        brush = QBrush(QColor(0, 0, 0, int(255 * 3 / 4)))
+        brush = QBrush(QColor(0, 0, 0, 0))
         self.setBrush(brush)
 
         self.setToolTip(self.getToolTip())
+        self.set_background_image()
 
         self.video_player = None
 
@@ -133,7 +141,6 @@ class GraphicBillboard(QGraphicsRectItem):
 
             self.init_time = tmp_init
     
-
         text = f"""Group: {self.billboard.billboards_groop_name};\nOwner: {self.billboard.owner_name};\nSchedules: {self.billboard.schedules_name};\nCurrent ad: {self.current_ad.ad_name}."""
         
         return text
@@ -155,4 +162,14 @@ class GraphicBillboard(QGraphicsRectItem):
         print(time_diffrence)
         playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence, ))
         playback_thread.start()
+
+
+    def set_background_image(self):
+        self.background_image = QPixmap("Data/Billboard.jpg")
+        self.background_image = self.background_image.scaled(self.w, self.h, Qt.KeepAspectRatio)
+
+
+    def paint(self, painter, option, widget):
+        super().paint(painter, option, widget)
+        painter.drawPixmap(self.x_pos, self.y_pos, self.background_image)
 
