@@ -1,14 +1,17 @@
 import re
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QComboBox, QPushButton, QMessageBox
 from Entity.User import User
 from InteractiveObjects.ScheduleComposer import ScheduleComposer
 
 class GroupComposer(QWidget):
+    accepted = pyqtSignal()
+
     def __init__(self, user: User):
         super().__init__()
         
         self.user = user
-        self.schedules = []
+        self.schedules : list[str] = []
 
         self.init_ui()
     
@@ -87,6 +90,7 @@ class GroupComposer(QWidget):
         if create_response == "Group created successfully":
             self.show_success_message("Group created successfully.")
             self.hide()
+            self.accepted.emit()
         
         else:
             self.show_error_message(create_response)
@@ -97,6 +101,7 @@ class GroupComposer(QWidget):
         error_dialog.setIcon(QMessageBox.Critical)
         error_dialog.setWindowTitle("Error")
         error_dialog.setText(message)
+        error_dialog.move(self.x(), self.y())
         error_dialog.exec_()
 
 
@@ -105,4 +110,6 @@ class GroupComposer(QWidget):
         success_dialog.setIcon(QMessageBox.Information)
         success_dialog.setWindowTitle("Success")
         success_dialog.setText(message)
+        success_dialog.move(self.x(), self.y())
         success_dialog.exec_()
+

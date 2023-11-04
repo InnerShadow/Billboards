@@ -16,6 +16,7 @@ from InteractiveObjects.Video_player import VideoPlayer
 from InteractiveObjects.ScheduleViewer import ScheduleViewer
 from InteractiveObjects.OwnerViewer import OwnerViewer
 from InteractiveObjects.ScheduleEditor import ScheduleEditor
+from InteractiveObjects.BillboardGroupManager import BillboardGroupManager
 
 class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, user : User):
@@ -71,17 +72,20 @@ class GraphicBillboard(QGraphicsRectItem):
         show_schedules_action = QAction("Show schedules", None)
         watch_ad_action = QAction("Watch ad", None)
         edit_schedule_action = QAction("Edit schedule", None)
+        move_button_action = QAction("Move to other groop", None)
 
         show_group_action.triggered.connect(self.show_owner)
         show_schedules_action.triggered.connect(self.show_schedules)
         watch_ad_action.triggered.connect(self.watch_ad)
         edit_schedule_action.triggered.connect(self.edit_schedule)
+        move_button_action.triggered.connect(self.move_to_groop)
 
         menu.addAction(show_group_action)
         menu.addAction(show_schedules_action)
 
         if self.user.login == self.billboard.owner_name or self.user.role == 'admin':
             menu.addAction(edit_schedule_action)
+            menu.addAction(move_button_action)
 
         menu.addAction(watch_ad_action)
 
@@ -111,6 +115,12 @@ class GraphicBillboard(QGraphicsRectItem):
         self.editor = ScheduleEditor(self.user, self.schedules)
         self.editor.move(self.x_pos, self.y_pos)
         self.editor.show()
+
+
+    def move_to_groop(self):
+        self.billboardGroupManager = BillboardGroupManager(self.user, self.billboard)
+        self.billboardGroupManager.move(self.x_pos, self.y_pos)
+        self.billboardGroupManager.show()
 
 
     def hoverEnterEvent(self, event):
