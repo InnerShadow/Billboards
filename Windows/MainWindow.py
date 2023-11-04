@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.billboards_groops : list[BillBoard_groop] = [] 
+        self.waiting_for_create_billboard = True
 
         self.initClient()
         self.initBillboards()
@@ -95,7 +96,7 @@ class MainWindow(QMainWindow):
         self.init_createSchedules()
         self.init_createGroup()
         self.init_uploadAd()
-        self.init_context_menu()
+        self.init_createBillboardButton()
         
 
     def init_menuBar(self):
@@ -111,16 +112,6 @@ class MainWindow(QMainWindow):
 
         account_menu = menubar.addMenu('Account')
         account_menu.addAction(change_password_action)
-
-
-    def init_context_menu(self):
-        self.context_menu = QMenu(self)
-        create_billboard_action = QAction("Create Billboard", self)
-        create_billboard_action.triggered.connect(self.create_billboard)
-        self.context_menu.addAction(create_billboard_action)
-
-        self.view.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.view.customContextMenuRequested.connect(self.show_context_menu)
 
 
     def init_createSchedules(self):
@@ -146,10 +137,29 @@ class MainWindow(QMainWindow):
         self.uploadAd_button.setFixedHeight(30)
         self.uploadAd_button.hide()
 
+    
+    def init_createBillboardButton(self):
+        self.create_billboard_button = QPushButton('Create Billboard', self)
+        self.create_billboard_button.clicked.connect(self.show_create_billboard_instructions)
+        self.create_billboard_button.setFixedWidth(125)
+        self.create_billboard_button.setFixedHeight(30)
+        self.create_billboard_button.hide()
+        
+
+    def show_create_billboard_instructions(self):
+        instructions = "Click on the map to create a billboard."
+        QMessageBox.information(self, "Create Billboard Instructions", instructions)
+        
 
     @pyqtSlot()
     def handleResize(self, event):
         self.updateGraphicsItems()
+
+    
+    def mousePressEvent(self, event):
+        if self.waiting_for_create_billboard and event.button() == Qt.LeftButton:
+            self.create_billboard()
+            self.waiting_for_create_billboard = False 
 
 
     def updateGraphicsItems(self):
@@ -166,6 +176,9 @@ class MainWindow(QMainWindow):
             self.update_create_schedules()
             self.update_create_group()
             self.update_UploadAd()
+
+        if self.user.role == 'admin':
+            self.update_CreateBillboards()
 
 
     def updateBeackground(self, bg_width : int, bg_height : int):
@@ -202,12 +215,13 @@ class MainWindow(QMainWindow):
         
 
     def update_UploadAd(self):
-        self.uploadAd_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 -30 - 25, 
+        self.uploadAd_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 30 - 25, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
-
-
-    def show_context_menu(self, pos):
-        self.context_menu.exec_(self.view.mapToGlobal(pos))
+        
+    
+    def update_CreateBillboards(self):
+        self.create_billboard_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 60 - 50, 
+                                            self.create_schedules_button.width(), self.create_schedules_button.height())
 
 
     def showScheduleComposer(self):
@@ -292,6 +306,9 @@ class MainWindow(QMainWindow):
             self.create_schedules_button.show()
             self.create_group_button.show()
             self.uploadAd_button.show()
+
+        if self.user.role == 'admin':
+            self.create_billboard_button.show()
         
         self.updateGraphicsItems()
 
@@ -301,7 +318,6 @@ class MainWindow(QMainWindow):
             self.createBillboardFail()
 
         else:
-
             cursor_pos = QCursor.pos()
             x = np.mean([round(cursor_pos.x() / self.view.viewport().width(), 3), round(cursor_pos.x() / self.view.viewport().height(), 3)])
             y = np.mean([round(cursor_pos.y() / self.view.viewport().height(), 3), round(cursor_pos.y() / self.view.viewport().width(), 3)])

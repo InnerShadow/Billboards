@@ -4,13 +4,13 @@ import threading
 from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal, QObject
 from PyQt5.QtGui import QColor, QPen, QPixmap
 
 from Entity.Billboard import BillBoard
 from Entity.User import User
 from Entity.Schedules import Schedules
-from InteractiveObjects.Video_downloader import *
+from InteractiveObjects.Video_downloader import VideoDownloader
 from InteractiveObjects.Video_player import VideoPlayer
 from InteractiveObjects.ScheduleViewer import ScheduleViewer
 from InteractiveObjects.OwnerViewer import OwnerViewer
@@ -18,6 +18,7 @@ from InteractiveObjects.ScheduleEditor import ScheduleEditor
 from InteractiveObjects.BillboardGroupManager import BillboardGroupManager
 
 class GraphicBillboard(QGraphicsRectItem):
+
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, user : User):
         super().__init__(x, y, w, h)
 
@@ -33,6 +34,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
     
     def init_ui(self):
+
         init_time = datetime.fromisoformat(self.user.client.Get_response("GET_TIME"))
 
         schedules_request = f"GET GROUP SCHEDULES schedules_name = {self.billboard.schedules_name}"
@@ -116,7 +118,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
 
     def move_to_groop(self):
-        self.billboardGroupManager = BillboardGroupManager(self.user, self.billboard)
+        self.billboardGroupManager = BillboardGroupManager(self.schedules, self.current_ad)
         self.billboardGroupManager.move(self.x_pos, self.y_pos)
         self.billboardGroupManager.show()
 

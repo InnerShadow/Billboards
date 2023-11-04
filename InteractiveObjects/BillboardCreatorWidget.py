@@ -71,13 +71,12 @@ class BillboardCreatorWidget(QWidget):
         create_request = f"CREATE NEW BILLBOARD FOR user = {selected_user} IN group = {selected_group} x_pos = {self.x_pos}, y_pos = {self.y_pos}"
         create_response = self.user.client.Get_response(create_request)
 
-        if create_response == "Billboard created successfully":
-            self.show_success_message(create_response)
+        if create_response == "Billboard created successfully" or create_response == "Ownership relationship already exists":
+            self.show_success_message("Billboard created successfully")
             self.hide()
 
         else:
             self.show_error_message(create_response)
-
 
 
     def get_user_list(self):
