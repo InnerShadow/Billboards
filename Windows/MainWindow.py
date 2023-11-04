@@ -1,9 +1,10 @@
 import re
+import numpy as np
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QCursor
 
 from ServerData.Client import *
 from Entity.BillBoard_groop import *
@@ -15,6 +16,7 @@ from InteractiveObjects.ScheduleComposer import ScheduleComposer
 from InteractiveObjects.GroupComposer import GroupComposer
 from InteractiveObjects.ChangePasswordWidget import ChangePasswordWidget
 from InteractiveObjects.UploadVideoWidget import UploadVideoWidget
+from InteractiveObjects.BillboardCreatorWidget import BillboardCreatorWidget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -93,6 +95,7 @@ class MainWindow(QMainWindow):
         self.init_createSchedules()
         self.init_createGroup()
         self.init_uploadAd()
+        self.init_context_menu()
         
 
     def init_menuBar(self):
@@ -108,6 +111,16 @@ class MainWindow(QMainWindow):
 
         account_menu = menubar.addMenu('Account')
         account_menu.addAction(change_password_action)
+
+
+    def init_context_menu(self):
+        self.context_menu = QMenu(self)
+        create_billboard_action = QAction("Create Billboard", self)
+        create_billboard_action.triggered.connect(self.create_billboard)
+        self.context_menu.addAction(create_billboard_action)
+
+        self.view.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.view.customContextMenuRequested.connect(self.show_context_menu)
 
 
     def init_createSchedules(self):
@@ -193,6 +206,10 @@ class MainWindow(QMainWindow):
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
 
 
+    def show_context_menu(self, pos):
+        self.context_menu.exec_(self.view.mapToGlobal(pos))
+
+
     def showScheduleComposer(self):
         self.scheduleComposer = ScheduleComposer(self.user)
         self.scheduleComposer.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
@@ -230,6 +247,7 @@ class MainWindow(QMainWindow):
 
 
     def show_login_window(self):
+        self.updateGraphicsItems()
         self.login_window = AuthenticationWindow(self.user.client)
         self.login_window.show()
         self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
@@ -253,6 +271,15 @@ class MainWindow(QMainWindow):
         error_dialog.setText("You need to log in before change password")
         error_dialog.move(self.x(), self.y())
         error_dialog.exec_()
+
+
+    def createBillboardFail(self):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.setText("Only admin can create billboards")
+        error_dialog.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        error_dialog.exec_()
     
 
     def handle_login_success(self, response : str):
@@ -267,4 +294,20 @@ class MainWindow(QMainWindow):
             self.uploadAd_button.show()
         
         self.updateGraphicsItems()
+
+
+    def create_billboard(self):
+        if self.user.role != 'admin':
+            self.createBillboardFail()
+
+        else:
+
+            cursor_pos = QCursor.pos()
+            x = np.mean([round(cursor_pos.x() / self.view.viewport().width(), 3), round(cursor_pos.x() / self.view.viewport().height(), 3)])
+            y = np.mean([round(cursor_pos.y() / self.view.viewport().height(), 3), round(cursor_pos.y() / self.view.viewport().width(), 3)])
+
+            self.billboardCreatorWidget = BillboardCreatorWidget(self.user, x, y)
+            self.billboardCreatorWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+            self.billboardCreatorWidget.show()
+
 

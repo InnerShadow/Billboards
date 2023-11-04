@@ -33,7 +33,6 @@ class GraphicBillboard(QGraphicsRectItem):
 
     
     def init_ui(self):
-
         init_time = datetime.fromisoformat(self.user.client.Get_response("GET_TIME"))
 
         schedules_request = f"GET GROUP SCHEDULES schedules_name = {self.billboard.schedules_name}"
