@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.billboards_groops : list[BillBoard_groop] = [] 
-        self.waiting_for_create_billboard = True
+        self.waiting_for_create_billboard = False
 
         self.initClient()
         self.initBillboards()
@@ -149,6 +149,7 @@ class MainWindow(QMainWindow):
     def show_create_billboard_instructions(self):
         instructions = "Click on the map to create a billboard."
         QMessageBox.information(self, "Create Billboard Instructions", instructions)
+        self.waiting_for_create_billboard = True
         
 
     @pyqtSlot()
