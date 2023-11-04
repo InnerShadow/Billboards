@@ -13,6 +13,7 @@ from Entity.User import User
 from Windows.AuthenticationWindow import AuthenticationWindow
 from InteractiveObjects.ScheduleComposer import ScheduleComposer
 from InteractiveObjects.GroupComposer import GroupComposer
+from InteractiveObjects.ChangePasswordWidget import ChangePasswordWidget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -96,9 +97,15 @@ class MainWindow(QMainWindow):
         log_in_action = QAction('Log In', self)
         log_in_action.triggered.connect(self.show_login_window)
 
+        change_password_action = QAction('Change password', self)
+        change_password_action.triggered.connect(self.change_password)
+
         menubar = self.menuBar()
-        file_menu = menubar.addMenu('Log in')
-        file_menu.addAction(log_in_action)
+        login_menu = menubar.addMenu('Log in')
+        login_menu.addAction(log_in_action)
+
+        account_menu = menubar.addMenu('Account')
+        account_menu.addAction(change_password_action)
 
 
     def init_createSchedules(self):
@@ -205,8 +212,27 @@ class MainWindow(QMainWindow):
         self.login_window.show()
         self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.login_window.login_successful.connect(self.handle_login_success)
-        
+
     
+    def change_password(self):
+        if self.user.role == 'viewer':
+            self.passwordChangeFailed()
+
+        else:
+            self.changePasswordWidget = ChangePasswordWidget(self.user)
+            self.changePasswordWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+            self.changePasswordWidget.show()
+            
+        
+    def passwordChangeFailed(self):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.setText("You need to log in before change password")
+        error_dialog.move(self.x(), self.y())
+        error_dialog.exec_()
+    
+
     def handle_login_success(self, response : str):
         login_patter = r'Logged in successfully username = (\w+), role = (\w+)'
         login_match = re.search(login_patter, response)
