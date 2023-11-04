@@ -1,6 +1,6 @@
 import re
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QHBoxLayout, QLineEdit, QMessageBox, QMenu
 
@@ -8,6 +8,8 @@ from InteractiveObjects.InsertAdDialog import InsertAdDialog
 from Entity.User import User
 
 class ScheduleComposer(QWidget):
+    accepted = pyqtSignal()
+
     def __init__(self, user: User):
         super().__init__()
 
@@ -28,7 +30,7 @@ class ScheduleComposer(QWidget):
         button_layout = QHBoxLayout()
 
         self.setWindowTitle("Create schedules")
-
+        
         button_layout.addWidget(self.add_button)
         button_layout.addWidget(self.remove_button)
 
@@ -126,6 +128,7 @@ class ScheduleComposer(QWidget):
 
         if schedules_response == "Schedule created successfully":
             self.show_success_message(schedules_response)
+            self.accepted.emit()
             self.hide()
         
         else:

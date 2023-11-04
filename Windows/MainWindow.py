@@ -12,6 +12,7 @@ from Entity.Schedules import *
 from Entity.User import User
 from Windows.AuthenticationWindow import AuthenticationWindow
 from InteractiveObjects.ScheduleComposer import ScheduleComposer
+from InteractiveObjects.GroupComposer import GroupComposer
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -88,7 +89,7 @@ class MainWindow(QMainWindow):
         self.updateGraphicsItems()
         self.init_menuBar()
         self.init_createSchedules()
-        self.create_schedules_button.hide()
+        self.init_createGroup()
         
 
     def init_menuBar(self):
@@ -103,6 +104,17 @@ class MainWindow(QMainWindow):
     def init_createSchedules(self):
         self.create_schedules_button = QPushButton('Create schedules', self)
         self.create_schedules_button.clicked.connect(self.showScheduleComposer)
+        self.create_schedules_button.setFixedWidth(125)
+        self.create_schedules_button.setFixedHeight(30)
+        self.create_schedules_button.hide()
+
+
+    def init_createGroup(self):
+        self.create_group_button = QPushButton('Create group', self)
+        self.create_group_button.clicked.connect(self.showGroupComposer)
+        self.create_group_button.setFixedWidth(125)
+        self.create_group_button.setFixedHeight(30)
+        self.create_group_button.hide()
 
 
     @pyqtSlot()
@@ -122,6 +134,7 @@ class MainWindow(QMainWindow):
 
         if self.user.role == 'owner' or self.user.role == 'admin':
             self.update_create_schedules()
+            self.update_create_group()
 
 
     def updateBeackground(self, bg_width : int, bg_height : int):
@@ -148,12 +161,23 @@ class MainWindow(QMainWindow):
 
     
     def update_create_schedules(self):
-        self.create_schedules_button.setGeometry(self.view.viewport().width() - 130, self.view.viewport().height() // 2, 
+        self.create_schedules_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 25, 
                                                  self.create_schedules_button.width() + 20, self.create_schedules_button.height())
+        
+    
+    def update_create_group(self):
+        self.create_group_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 + 25, 
+                                            self.create_schedules_button.width() + 20, self.create_schedules_button.height())
 
 
     def showScheduleComposer(self):
         self.scheduleComposer = ScheduleComposer(self.user)
+        self.scheduleComposer.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        self.scheduleComposer.show()
+
+
+    def showGroupComposer(self):
+        self.scheduleComposer = GroupComposer(self.user)
         self.scheduleComposer.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.scheduleComposer.show()
 
@@ -191,6 +215,7 @@ class MainWindow(QMainWindow):
 
         if self.user.role == 'owner' or self.user.role == 'admin':
             self.create_schedules_button.show()
+            self.create_group_button.show()
         
         self.updateGraphicsItems()
 
