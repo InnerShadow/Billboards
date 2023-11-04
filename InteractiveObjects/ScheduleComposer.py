@@ -1,5 +1,8 @@
 import re
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QHBoxLayout, QLineEdit, QMessageBox
+
+from PyQt5.QtCore import Qt
+
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QHBoxLayout, QLineEdit, QMessageBox, QMenu
 
 from InteractiveObjects.InsertAdDialog import InsertAdDialog
 from Entity.User import User
@@ -40,7 +43,42 @@ class ScheduleComposer(QWidget):
         self.remove_button.clicked.connect(self.remove_advertisement)
         self.save_button.clicked.connect(self.save_schedule)
 
+        self.schedule_list.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.schedule_list.customContextMenuRequested.connect(self.show_context_menu)
+
         self.getAdds()
+
+    
+    def show_context_menu(self, point):
+        selected_item = self.schedule_list.itemAt(point)
+        if selected_item:
+            menu = QMenu(self)
+            add_below_action = menu.addAction("Add Ad Below")
+            delete_action = menu.addAction("Delete Current Item")
+
+            action = menu.exec_(self.schedule_list.mapToGlobal(point))
+
+            if action == add_below_action:
+                self.add_advertisement_below(selected_item)
+            elif action == delete_action:
+                self.delete_advertisement(selected_item)
+
+    
+    def add_advertisement_below(self, selected_item):
+        if self.ads:
+            selected_ad, ok = InsertAdDialog(self.ads, self.user).get_selected_advertisement(self.ads, self.user)
+            if ok:
+                item = QListWidgetItem(selected_ad)
+                if item.text() != '':
+                    row = self.schedule_list.row(selected_item)
+                    self.schedule_list.insertItem(row + 1, item)
+
+
+    def delete_advertisement(self, selected_item):
+        row = self.schedule_list.row(selected_item)
+        if row != -1:
+            self.schedule_list.takeItem(row)
+            del selected_item
 
 
     def getAdds(self):
@@ -86,10 +124,12 @@ class ScheduleComposer(QWidget):
 
         schedules_response = self.user.client.Get_response(createRequest)
 
-        self.show_success_message(schedules_response)
-
         if schedules_response == "Schedule created successfully":
+            self.show_success_message(schedules_response)
             self.hide()
+        
+        else:
+            self.show_error_message(schedules_response)
 
 
     def show_error_message(self, message):
