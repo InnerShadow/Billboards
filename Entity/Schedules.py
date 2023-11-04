@@ -18,5 +18,4 @@ class Schedules:
             ad = Ad(video_url, ad_name, int(float(ad_duration)))
             self.ad_queue.append(ad)
         
-        pass
 
