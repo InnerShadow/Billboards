@@ -20,13 +20,15 @@ class BillboardGroupManager(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
+        self.setWindowTitle("Move a billboard")
+
         self.group_combo = QComboBox()
         self.move_button = QPushButton("Move Billboard")
         self.create_group_button = QPushButton("Create New Group")
 
         layout.addWidget(self.group_combo)
-        layout.addWidget(self.move_button)
         layout.addWidget(self.create_group_button)
+        layout.addWidget(self.move_button)
 
         self.group_combo.addItem("Select a group")
         self.group_combo.setCurrentText("Select a group")
@@ -36,6 +38,8 @@ class BillboardGroupManager(QWidget):
         self.fill_groups()
 
         self.setLayout(layout)
+
+        self.resize(225, 30)
 
 
     def move_billboard(self):
