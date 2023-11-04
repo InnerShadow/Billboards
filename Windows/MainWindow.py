@@ -14,6 +14,7 @@ from Windows.AuthenticationWindow import AuthenticationWindow
 from InteractiveObjects.ScheduleComposer import ScheduleComposer
 from InteractiveObjects.GroupComposer import GroupComposer
 from InteractiveObjects.ChangePasswordWidget import ChangePasswordWidget
+from InteractiveObjects.UploadVideoWidget import UploadVideoWidget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -91,6 +92,7 @@ class MainWindow(QMainWindow):
         self.init_menuBar()
         self.init_createSchedules()
         self.init_createGroup()
+        self.init_uploadAd()
         
 
     def init_menuBar(self):
@@ -124,6 +126,14 @@ class MainWindow(QMainWindow):
         self.create_group_button.hide()
 
 
+    def init_uploadAd(self):
+        self.uploadAd_button = QPushButton('Upload ad', self)
+        self.uploadAd_button.clicked.connect(self.showUploadAd)
+        self.uploadAd_button.setFixedWidth(125)
+        self.uploadAd_button.setFixedHeight(30)
+        self.uploadAd_button.hide()
+
+
     @pyqtSlot()
     def handleResize(self, event):
         self.updateGraphicsItems()
@@ -142,6 +152,7 @@ class MainWindow(QMainWindow):
         if self.user.role == 'owner' or self.user.role == 'admin':
             self.update_create_schedules()
             self.update_create_group()
+            self.update_UploadAd()
 
 
     def updateBeackground(self, bg_width : int, bg_height : int):
@@ -168,13 +179,18 @@ class MainWindow(QMainWindow):
 
     
     def update_create_schedules(self):
-        self.create_schedules_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 25, 
-                                                 self.create_schedules_button.width() + 20, self.create_schedules_button.height())
+        self.create_schedules_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2, 
+                                                 self.create_schedules_button.width(), self.create_schedules_button.height())
         
     
     def update_create_group(self):
-        self.create_group_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 + 25, 
-                                            self.create_schedules_button.width() + 20, self.create_schedules_button.height())
+        self.create_group_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 + 30 + 25, 
+                                            self.create_schedules_button.width(), self.create_schedules_button.height())
+        
+
+    def update_UploadAd(self):
+        self.uploadAd_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 -30 - 25, 
+                                            self.create_schedules_button.width(), self.create_schedules_button.height())
 
 
     def showScheduleComposer(self):
@@ -187,6 +203,12 @@ class MainWindow(QMainWindow):
         self.scheduleComposer = GroupComposer(self.user)
         self.scheduleComposer.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.scheduleComposer.show()
+
+    
+    def showUploadAd(self):
+        self.uploadVideoWidget = UploadVideoWidget(self.user)
+        self.uploadVideoWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        self.uploadVideoWidget.show()
 
 
     def clearScene(self):
@@ -242,6 +264,7 @@ class MainWindow(QMainWindow):
         if self.user.role == 'owner' or self.user.role == 'admin':
             self.create_schedules_button.show()
             self.create_group_button.show()
+            self.uploadAd_button.show()
         
         self.updateGraphicsItems()
 

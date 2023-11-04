@@ -6,7 +6,7 @@ class Client:
         self.port = port
 
 
-    def Get_response(self, request):
+    def Get_response(self, request : str):
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect((self.host, self.port))
@@ -29,7 +29,27 @@ class Client:
 
         else:
             return response.decode('utf-8')
-    
+
+
+    def Send_ad(self, video_name: str, video_url: str):
+        try:
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.connect((self.host, self.port))
+
+            request = f"UPLOAD FILE file_name = {video_name}"
+            client.send(request.encode('utf-8'))
+
+            with open(video_url, 'rb') as video_file:
+                while True:
+                    chunk = video_file.read(1024)
+                    if not chunk:
+                        break
+                    client.send(chunk)
+
+        finally:
+            client.close()
+            return "File uploaded successfully"
+
 
     def get_ip_address(self):
         try:

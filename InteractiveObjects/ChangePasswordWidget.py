@@ -65,7 +65,6 @@ class ChangePasswordWidget(QWidget):
             self.show_error_message("Please fill in all fields.")
             return
 
-
         old_password = self.old_password_input.text()
         new_password = self.new_password_input.text()
         confirm_password = self.confirm_password_input.text()
@@ -107,3 +106,4 @@ class ChangePasswordWidget(QWidget):
         success_dialog.setText(message)
         success_dialog.move(self.x(), self.y())
         success_dialog.exec_()
+
