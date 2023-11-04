@@ -5,6 +5,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QListWidget, QListWidgetItem, QMenu, QAction
 
 from InteractiveObjects.TransferOwnershipWiget import TransferOwnershipWiget
+from InteractiveObjects.SetScheduleWidget import SetScheduleWidget
 from Entity.User import User
 
 class OwnerViewer(QWidget):
@@ -72,7 +73,19 @@ class OwnerViewer(QWidget):
             transfer_action = QAction("Transfer Ownership", self)
             transfer_action.triggered.connect(self.transfer_ownership)
             context_menu.addAction(transfer_action)
+
+            setSchedulesAction = QAction("Set Schedule", self)
+            setSchedulesAction.triggered.connect(self.setSchedules)
+            context_menu.addAction(setSchedulesAction)
             context_menu.exec_(list_widget.mapToGlobal(pos))
+
+
+    def setSchedules(self):
+        self.setWiget = SetScheduleWidget(self.user, self.billboards_groop_name)
+        self.setWiget.move(self.x(), self.y())
+        self.setWiget.show()
+
+        self.setWiget.set_signal.connect(self.updateInfo)
 
 
     def transfer_ownership(self):

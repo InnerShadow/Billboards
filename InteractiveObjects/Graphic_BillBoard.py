@@ -5,12 +5,11 @@ from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QBrush, QColor, QPen, QPixmap
+from PyQt5.QtGui import QColor, QPen, QPixmap
 
-from Entity.Billboard import *
-from ServerData.Client import *
+from Entity.Billboard import BillBoard
 from Entity.User import User
-from Entity.Schedules import *
+from Entity.Schedules import Schedules
 from InteractiveObjects.Video_downloader import *
 from InteractiveObjects.Video_player import VideoPlayer
 from InteractiveObjects.ScheduleViewer import ScheduleViewer
