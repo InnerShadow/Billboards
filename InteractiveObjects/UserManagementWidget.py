@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
 
 from Entity.User import User
 from InteractiveObjects.CreateUserWidget import CreateUserWidget
+from InteractiveObjects.DeleteUserWidget import DeleteUserWidget
 
 class UserManagementWidget(QWidget):
     def __init__(self, user : User):
@@ -35,8 +36,12 @@ class UserManagementWidget(QWidget):
         self.createUserWidget = CreateUserWidget(self.user)
         self.createUserWidget.move(self.x(), self.y())
         self.createUserWidget.show()
+        self.createUserWidget.created.connect(self.hide)
 
 
     def delete_user_clicked(self):
-        print("Delete User button clicked")
+        self.deleteUserWidget = DeleteUserWidget(self.user)
+        self.deleteUserWidget.move(self.x(), self.y())
+        self.deleteUserWidget.show()
+        self.deleteUserWidget.deleted.connect(self.hide)
 

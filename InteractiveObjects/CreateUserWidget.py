@@ -1,8 +1,11 @@
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit, QComboBox, QMessageBox
 
 from Entity.User import User
 
 class CreateUserWidget(QWidget):
+    created = pyqtSignal()
+
     def __init__(self, user : User):
         super().__init__()
 
@@ -20,6 +23,8 @@ class CreateUserWidget(QWidget):
         password_label = QLabel("Password:")
         self.password_input = QLineEdit()
         self.password_input.setEchoMode(QLineEdit.Password)
+
+        self.setWindowTitle("Crete user")
 
         role_label = QLabel("Role:")
         self.role_combobox = QComboBox()
@@ -61,4 +66,5 @@ class CreateUserWidget(QWidget):
         success_dialog.setText(message)
         success_dialog.exec_()
         self.hide()
+        self.created.emit()
         
