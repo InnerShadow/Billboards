@@ -1,5 +1,6 @@
 import re
 
+from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QComboBox, QPushButton, QLabel, QMessageBox
 
 from InteractiveObjects.GroupComposer import GroupComposer
@@ -7,6 +8,8 @@ from InteractiveObjects.GroupComposer import GroupComposer
 from Entity.User import User
 
 class BillboardCreatorWidget(QWidget):
+    created = pyqtSignal()
+
     def __init__(self, user: User, x_pos: float, y_pos: float):
         super().__init__()
 
@@ -74,6 +77,7 @@ class BillboardCreatorWidget(QWidget):
         if create_response == "Billboard created successfully" or create_response == "Ownership relationship already exists":
             self.show_success_message("Billboard created successfully")
             self.hide()
+            self.created.emit()
 
         else:
             self.show_error_message(create_response)

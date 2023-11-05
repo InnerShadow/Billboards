@@ -1,5 +1,4 @@
 import re
-import numpy as np
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -104,7 +103,7 @@ class MainWindow(QMainWindow):
         log_in_action.triggered.connect(self.show_login_window)
 
         change_password_action = QAction('Change password', self)
-        change_password_action.triggered.connect(self.change_password)
+        change_password_action.triggered.connect(self.show_change_password)
 
         menubar = self.menuBar()
         login_menu = menubar.addMenu('Log in')
@@ -144,12 +143,18 @@ class MainWindow(QMainWindow):
         self.create_billboard_button.setFixedWidth(125)
         self.create_billboard_button.setFixedHeight(30)
         self.create_billboard_button.hide()
-        
 
-    def show_create_billboard_instructions(self):
-        instructions = "Click on the map to create a billboard."
-        QMessageBox.information(self, "Create Billboard Instructions", instructions)
-        self.waiting_for_create_billboard = True
+
+    def init_beckground(self):
+        self.background_image = QPixmap('Data/Jodino.png')
+        self.background_item = QGraphicsPixmapItem(self.background_image)
+        self.background_item.setZValue(0)
+        self.scene.addItem(self.background_item)
+
+
+    def init_close_button(self):
+        self.close_button = QPushButton('Exit', self)
+        self.close_button.clicked.connect(self.close)
         
 
     @pyqtSlot()
@@ -170,7 +175,7 @@ class MainWindow(QMainWindow):
         self.updateCloseButton(bg_width)
         self.updateBeackground(bg_width, bg_height)
         self.clearScene()
-        self.updateBillboards(min([bg_width, bg_height]))
+        self.updateBillboards(bg_width, bg_height)
         self.update_login_window()
 
         if self.user.role == 'owner' or self.user.role == 'admin':
@@ -190,11 +195,11 @@ class MainWindow(QMainWindow):
         self.close_button.setGeometry(bg_width - 90, self.view.viewport().height(), self.close_button.width(), self.close_button.height())
 
 
-    def updateBillboards(self, min_size : int):
+    def updateBillboards(self, x_scale : int, y_scale):
         for groop in self.billboards_groops:
             for billboard in groop.BillBoards:
-                x = int(billboard.x_pos * min_size)
-                y = int(billboard.y_pos * min_size)
+                x = int(billboard.x_pos * x_scale)
+                y = int(billboard.y_pos * y_scale)
 
                 graphic_billboard = GraphicBillboard(x, y, self.billboard_w, self.billboard_h, billboard, self.user)
 
@@ -223,6 +228,12 @@ class MainWindow(QMainWindow):
     def update_CreateBillboards(self):
         self.create_billboard_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 60 - 50, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
+        
+    
+    def update_billbordsGroops(self):
+        self.billboards_groops = []
+        self.initBillboards()
+        self.updateGraphicsItems()
 
 
     def showScheduleComposer(self):
@@ -242,25 +253,13 @@ class MainWindow(QMainWindow):
         self.uploadVideoWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.uploadVideoWidget.show()
 
+    
+    def show_create_billboard_instructions(self):
+        instructions = "Click on the map to create a billboard."
+        QMessageBox.information(self, "Create Billboard Instructions", instructions)
+        self.waiting_for_create_billboard = True
 
-    def clearScene(self):
-        for item in self.scene.items():
-            if isinstance(item, QGraphicsRectItem):
-                self.scene.removeItem(item)
-
-
-    def init_beckground(self):
-        self.background_image = QPixmap('Data/Jodino.png')
-        self.background_item = QGraphicsPixmapItem(self.background_image)
-        self.background_item.setZValue(0)
-        self.scene.addItem(self.background_item)
-
-
-    def init_close_button(self):
-        self.close_button = QPushButton('Exit', self)
-        self.close_button.clicked.connect(self.close)
-
-
+    
     def show_login_window(self):
         self.updateGraphicsItems()
         self.login_window = AuthenticationWindow(self.user.client)
@@ -269,7 +268,7 @@ class MainWindow(QMainWindow):
         self.login_window.login_successful.connect(self.handle_login_success)
 
     
-    def change_password(self):
+    def show_change_password(self):
         if self.user.role == 'viewer':
             self.passwordChangeFailed()
 
@@ -277,6 +276,12 @@ class MainWindow(QMainWindow):
             self.changePasswordWidget = ChangePasswordWidget(self.user)
             self.changePasswordWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
             self.changePasswordWidget.show()
+
+
+    def clearScene(self):
+        for item in self.scene.items():
+            if isinstance(item, QGraphicsRectItem):
+                self.scene.removeItem(item)
             
         
     def passwordChangeFailed(self):
@@ -320,11 +325,11 @@ class MainWindow(QMainWindow):
 
         else:
             cursor_pos = QCursor.pos()
-            x = np.mean([round(cursor_pos.x() / self.view.viewport().width(), 3), round(cursor_pos.x() / self.view.viewport().height(), 3)])
-            y = np.mean([round(cursor_pos.y() / self.view.viewport().height(), 3), round(cursor_pos.y() / self.view.viewport().width(), 3)])
+            x = 0.805 * round(cursor_pos.x() / self.view.viewport().width(), 3)
+            y = 0.905 * round(cursor_pos.y() / self.view.viewport().height(), 3)
 
             self.billboardCreatorWidget = BillboardCreatorWidget(self.user, x, y)
             self.billboardCreatorWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
             self.billboardCreatorWidget.show()
-
+            self.billboardCreatorWidget.created.connect(self.update_billbordsGroops)
 
