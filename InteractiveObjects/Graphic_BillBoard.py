@@ -73,12 +73,14 @@ class GraphicBillboard(QGraphicsRectItem):
         watch_ad_action = QAction("Watch ad", None)
         edit_schedule_action = QAction("Edit schedule", None)
         move_button_action = QAction("Move to other groop", None)
+        delete_action = QAction("Delete billboard", None)
 
         show_group_action.triggered.connect(self.show_owner)
         show_schedules_action.triggered.connect(self.show_schedules)
         watch_ad_action.triggered.connect(self.watch_ad)
         edit_schedule_action.triggered.connect(self.edit_schedule)
         move_button_action.triggered.connect(self.move_to_groop)
+        delete_action.triggered.connect(self.deleteBillboard)
 
         menu.addAction(show_group_action)
         menu.addAction(show_schedules_action)
@@ -88,6 +90,9 @@ class GraphicBillboard(QGraphicsRectItem):
             menu.addAction(move_button_action)
 
         menu.addAction(watch_ad_action)
+
+        if self.user.role == 'admin':
+            menu.addAction(delete_action)
 
         menu.exec(event.screenPos())
 
@@ -136,7 +141,6 @@ class GraphicBillboard(QGraphicsRectItem):
     
     
     def getToolTip(self):
-
         self.current_ad = None
 
         tmp_init = self.init_time
@@ -174,6 +178,15 @@ class GraphicBillboard(QGraphicsRectItem):
 
         else:
             self.on_download_finished()
+
+    
+    def deleteBillboard(self):
+        reply = QMessageBox.question(None, 'Delete billboard', 'Are you sure you want to delete it?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            delete_request = f"REMOVE BILLBORD x_pos = {self.billboard.x_pos}, y_pos = {self.billboard.y_pos}"
+            delete_repsnose = self.user.client.Get_response(delete_request)
+            self.hide()
 
 
     def on_download_finished(self):
