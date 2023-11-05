@@ -122,7 +122,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
 
     def move_to_groop(self):
-        self.billboardGroupManager = BillboardGroupManager(self.schedules, self.current_ad)
+        self.billboardGroupManager = BillboardGroupManager(self.user, self.billboard)
         self.billboardGroupManager.move(self.x_pos, self.y_pos)
         self.billboardGroupManager.show()
 
