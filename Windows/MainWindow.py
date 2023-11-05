@@ -17,6 +17,7 @@ from InteractiveObjects.ChangePasswordWidget import ChangePasswordWidget
 from InteractiveObjects.UploadVideoWidget import UploadVideoWidget
 from InteractiveObjects.BillboardCreatorWidget import BillboardCreatorWidget
 from InteractiveObjects.UserManagementWidget import UserManagementWidget
+from InteractiveObjects.MemoryLimitWidget import MemoryLimitWidget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -27,6 +28,8 @@ class MainWindow(QMainWindow):
 
         self.billboards_groops : list[BillBoard_groop] = [] 
         self.waiting_for_create_billboard = False
+
+        self.memoryLimit : int = self.loadMemoryLimit()
 
         self.initClient()
         self.initBillboards()
@@ -107,12 +110,18 @@ class MainWindow(QMainWindow):
         change_password_action = QAction('Change password', self)
         change_password_action.triggered.connect(self.show_change_password)
 
+        memory_limit_action = QAction('Set Memory Limit', self)
+        memory_limit_action.triggered.connect(self.show_memory_limit)
+
         menubar = self.menuBar()
         login_menu = menubar.addMenu('Log in')
         login_menu.addAction(log_in_action)
 
         account_menu = menubar.addMenu('Account')
         account_menu.addAction(change_password_action)
+
+        memory_menu = menubar.addMenu('Memory')
+        memory_menu.addAction(memory_limit_action)
 
 
     def init_createSchedules(self):
@@ -274,7 +283,6 @@ class MainWindow(QMainWindow):
         self.userManagementWidget = UserManagementWidget(self.user)
         self.userManagementWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.userManagementWidget.show()
-        pass
 
     
     def show_create_billboard_instructions(self):
@@ -299,6 +307,13 @@ class MainWindow(QMainWindow):
             self.changePasswordWidget = ChangePasswordWidget(self.user)
             self.changePasswordWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
             self.changePasswordWidget.show()
+
+
+    def show_memory_limit(self):
+        self.memoryLimitWidget = MemoryLimitWidget(self.memoryLimit)
+        self.memoryLimitWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        self.memoryLimitWidget.new_memory.connect(self.setMemoryLimit)
+        self.memoryLimitWidget.show()
 
 
     def clearScene(self):
@@ -357,3 +372,16 @@ class MainWindow(QMainWindow):
             self.billboardCreatorWidget.show()
             self.billboardCreatorWidget.created.connect(self.update_billbordsGroops)
 
+
+    def setMemoryLimit(self, new_limit : int):
+        self.memoryLimit = new_limit
+
+
+    def loadMemoryLimit(self):
+        try:
+            with open("Data/memory.txt", 'r') as f:
+                return int(f.read())
+            
+        except Exception:
+            return 50
+        
