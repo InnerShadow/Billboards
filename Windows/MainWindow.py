@@ -18,6 +18,7 @@ from InteractiveObjects.UploadVideoWidget import UploadVideoWidget
 from InteractiveObjects.BillboardCreatorWidget import BillboardCreatorWidget
 from InteractiveObjects.UserManagementWidget import UserManagementWidget
 from InteractiveObjects.MemoryLimitWidget import MemoryLimitWidget
+from InteractiveObjects.LogExportWidget import LogExportWidget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -113,15 +114,22 @@ class MainWindow(QMainWindow):
         memory_limit_action = QAction('Set Memory Limit', self)
         memory_limit_action.triggered.connect(self.show_memory_limit)
 
+        export_logs_action = QAction('Export logs', self)
+        export_logs_action.triggered.connect(self.show_export_logs)
+
         menubar = self.menuBar()
+
         login_menu = menubar.addMenu('Log in')
         login_menu.addAction(log_in_action)
+
+        memory_menu = menubar.addMenu('Memory')
+        memory_menu.addAction(memory_limit_action)
 
         account_menu = menubar.addMenu('Account')
         account_menu.addAction(change_password_action)
 
-        memory_menu = menubar.addMenu('Memory')
-        memory_menu.addAction(memory_limit_action)
+        logs_menu = menubar.addMenu('Logs')
+        logs_menu.addAction(export_logs_action)
 
 
     def init_createSchedules(self):
@@ -315,11 +323,30 @@ class MainWindow(QMainWindow):
         self.memoryLimitWidget.new_memory.connect(self.setMemoryLimit)
         self.memoryLimitWidget.show()
 
+    
+    def show_export_logs(self):
+        if self.user.role != 'admin':
+            self.exportLogsFailed()
+        
+        else:
+            self.logExportWidget = LogExportWidget(self.user)
+            self.logExportWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+            self.logExportWidget.show()
+
 
     def clearScene(self):
         for item in self.scene.items():
             if isinstance(item, QGraphicsRectItem):
                 self.scene.removeItem(item)
+
+    
+    def exportLogsFailed(self):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.setText("Only admin can export logs")
+        error_dialog.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        error_dialog.exec_()
             
         
     def passwordChangeFailed(self):
@@ -327,7 +354,7 @@ class MainWindow(QMainWindow):
         error_dialog.setIcon(QMessageBox.Critical)
         error_dialog.setWindowTitle("Error")
         error_dialog.setText("You need to log in before change password")
-        error_dialog.move(self.x(), self.y())
+        error_dialog.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         error_dialog.exec_()
 
 
