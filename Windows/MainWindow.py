@@ -181,7 +181,7 @@ class MainWindow(QMainWindow):
 
     def init_close_button(self):
         self.close_button = QPushButton('Exit', self)
-        self.close_button.clicked.connect(self.close)
+        self.close_button.clicked.connect(self.doExit)
         
 
     @pyqtSlot()
@@ -412,3 +412,10 @@ class MainWindow(QMainWindow):
         except Exception:
             return 50
         
+
+    def doExit(self):
+        exit_request = f"EXIT APP"
+        _ = self.user.client.Get_response(exit_request)
+
+        self.close()
+

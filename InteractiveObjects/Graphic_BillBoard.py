@@ -171,6 +171,9 @@ class GraphicBillboard(QGraphicsRectItem):
 
 
     def get_video(self):
+        watch_request = f"EXIT APP"
+        _ = self.user.client.Get_response(watch_request)
+        
         if not os.path.exists(self.current_ad.vidio_url):
             self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.user.client, self.x_pos, self.y_pos)
             self.video_downloader.finished.connect(self.on_download_finished)
