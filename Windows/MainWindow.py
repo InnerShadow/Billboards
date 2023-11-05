@@ -19,6 +19,7 @@ from InteractiveObjects.BillboardCreatorWidget import BillboardCreatorWidget
 from InteractiveObjects.UserManagementWidget import UserManagementWidget
 from InteractiveObjects.MemoryLimitWidget import MemoryLimitWidget
 from InteractiveObjects.LogExportWidget import LogExportWidget
+from InteractiveObjects.InfoWiget import InfoWiget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -94,7 +95,8 @@ class MainWindow(QMainWindow):
 
         self.init_beckground()
         self.init_close_button()
-        self.resizeEvent = self.handleResize
+        self.init_info()
+        self.init_statistics()
         self.updateGraphicsItems()
         self.init_menuBar()
         self.init_createSchedules()
@@ -102,7 +104,8 @@ class MainWindow(QMainWindow):
         self.init_uploadAd()
         self.init_createBillboardButton()
         self.init_usersMenuButton()
-        
+        self.resizeEvent = self.handleResize
+
 
     def init_menuBar(self):
         log_in_action = QAction('Log In', self)
@@ -132,6 +135,22 @@ class MainWindow(QMainWindow):
         logs_menu.addAction(export_logs_action)
 
 
+    def init_info(self):
+        self.info_button = QPushButton('Info', self)
+        self.info_button.clicked.connect(self.showInfo)
+        self.info_button.setFixedWidth(125)
+        self.info_button.setFixedHeight(30)
+        self.info_button.show()
+
+
+    def init_statistics(self):
+        self.statistica_button = QPushButton('Show statistics', self)
+        self.statistica_button.clicked.connect(self.showStatistics)
+        self.statistica_button.setFixedWidth(125)
+        self.statistica_button.setFixedHeight(30)
+        self.statistica_button.show()
+
+    
     def init_createSchedules(self):
         self.create_schedules_button = QPushButton('Create schedules', self)
         self.create_schedules_button.clicked.connect(self.showScheduleComposer)
@@ -204,6 +223,8 @@ class MainWindow(QMainWindow):
         self.clearScene()
         self.updateBillboards(bg_width, bg_height)
         self.update_login_window()
+        self.updateInfo()
+        self.updateStatistics()
 
         if self.user.role == 'owner' or self.user.role == 'admin':
             self.update_create_schedules()
@@ -261,8 +282,29 @@ class MainWindow(QMainWindow):
     def update_user_menu(self):
         self.user_menu_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 + 60 + 50, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
+
+    
+    def updateInfo(self):
+        self.info_button.setGeometry(30, self.view.viewport().height() // 2 + 27, 
+                                            self.info_button.width(), self.info_button.height())
         
     
+    def updateStatistics(self):
+        self.statistica_button.setGeometry(30, self.view.viewport().height() // 2 - 27, 
+                                            self.statistica_button.width(), self.statistica_button.height())
+        
+    
+    def showInfo(self):
+        self.infoWiget = InfoWiget()
+        self.infoWiget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        self.infoWiget.show()
+
+
+    def showStatistics(self):
+        print("Bluad")
+        pass
+
+
     def update_billbordsGroops(self):
         self.billboards_groops = []
         self.initBillboards()

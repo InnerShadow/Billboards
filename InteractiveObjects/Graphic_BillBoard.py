@@ -4,7 +4,7 @@ import threading
 from datetime import datetime, timedelta
 
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import Qt, pyqtSignal, QObject
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPen, QPixmap
 
 from Entity.Billboard import BillBoard
@@ -18,7 +18,6 @@ from InteractiveObjects.ScheduleEditor import ScheduleEditor
 from InteractiveObjects.BillboardGroupManager import BillboardGroupManager
 
 class GraphicBillboard(QGraphicsRectItem):
-
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, user : User):
         super().__init__(x, y, w, h)
 
@@ -171,9 +170,9 @@ class GraphicBillboard(QGraphicsRectItem):
 
 
     def get_video(self):
-        watch_request = f"EXIT APP"
+        watch_request = f"WATCH AD ad = {self.current_ad.ad_name}"
         _ = self.user.client.Get_response(watch_request)
-        
+
         if not os.path.exists(self.current_ad.vidio_url):
             self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.user.client, self.x_pos, self.y_pos)
             self.video_downloader.finished.connect(self.on_download_finished)

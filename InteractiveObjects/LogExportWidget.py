@@ -12,6 +12,8 @@ class LogExportWidget(QWidget):
         self.user = user
         self.initUI()
 
+        self.show()
+
 
     def initUI(self):
         layout = QVBoxLayout()
