@@ -16,6 +16,7 @@ from InteractiveObjects.GroupComposer import GroupComposer
 from InteractiveObjects.ChangePasswordWidget import ChangePasswordWidget
 from InteractiveObjects.UploadVideoWidget import UploadVideoWidget
 from InteractiveObjects.BillboardCreatorWidget import BillboardCreatorWidget
+from InteractiveObjects.UserManagementWidget import UserManagementWidget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -96,6 +97,7 @@ class MainWindow(QMainWindow):
         self.init_createGroup()
         self.init_uploadAd()
         self.init_createBillboardButton()
+        self.init_usersMenuButton()
         
 
     def init_menuBar(self):
@@ -144,6 +146,14 @@ class MainWindow(QMainWindow):
         self.create_billboard_button.setFixedHeight(30)
         self.create_billboard_button.hide()
 
+    
+    def init_usersMenuButton(self):
+        self.user_menu_button = QPushButton('Users Menu', self)
+        self.user_menu_button.clicked.connect(self.show_user_menu)
+        self.user_menu_button.setFixedWidth(125)
+        self.user_menu_button.setFixedHeight(30)
+        self.user_menu_button.hide()
+
 
     def init_beckground(self):
         self.background_image = QPixmap('Data/Jodino.png')
@@ -185,6 +195,7 @@ class MainWindow(QMainWindow):
 
         if self.user.role == 'admin':
             self.update_CreateBillboards()
+            self.update_user_menu()
 
 
     def updateBeackground(self, bg_width : int, bg_height : int):
@@ -229,6 +240,11 @@ class MainWindow(QMainWindow):
         self.create_billboard_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 60 - 50, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
         
+
+    def update_user_menu(self):
+        self.user_menu_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 + 60 + 50, 
+                                            self.create_schedules_button.width(), self.create_schedules_button.height())
+        
     
     def update_billbordsGroops(self):
         self.billboards_groops = []
@@ -252,6 +268,13 @@ class MainWindow(QMainWindow):
         self.uploadVideoWidget = UploadVideoWidget(self.user)
         self.uploadVideoWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.uploadVideoWidget.show()
+
+
+    def show_user_menu(self):
+        self.userManagementWidget = UserManagementWidget(self.user)
+        self.userManagementWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        self.userManagementWidget.show()
+        pass
 
     
     def show_create_billboard_instructions(self):
@@ -315,6 +338,7 @@ class MainWindow(QMainWindow):
 
         if self.user.role == 'admin':
             self.create_billboard_button.show()
+            self.user_menu_button.show()
         
         self.updateGraphicsItems()
 

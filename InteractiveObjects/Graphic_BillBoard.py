@@ -185,7 +185,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
         if reply == QMessageBox.Yes:
             delete_request = f"REMOVE BILLBORD x_pos = {self.billboard.x_pos}, y_pos = {self.billboard.y_pos}"
-            delete_repsnose = self.user.client.Get_response(delete_request)
+            _ = self.user.client.Get_response(delete_request)
             self.hide()
 
 
