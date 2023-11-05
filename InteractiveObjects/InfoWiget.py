@@ -8,7 +8,7 @@ class InfoWiget(QWidget):
         self.init_ui()
 
     
-    def init_ui(self):
+    def init_ui(self):  
         self.setWindowTitle("Info")
 
         self.label1 = QLabel(self)

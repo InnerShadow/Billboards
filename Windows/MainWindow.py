@@ -20,6 +20,7 @@ from InteractiveObjects.UserManagementWidget import UserManagementWidget
 from InteractiveObjects.MemoryLimitWidget import MemoryLimitWidget
 from InteractiveObjects.LogExportWidget import LogExportWidget
 from InteractiveObjects.InfoWiget import InfoWiget
+from InteractiveObjects.StatisticsWiget import StatisticsWiget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75
@@ -301,8 +302,9 @@ class MainWindow(QMainWindow):
 
 
     def showStatistics(self):
-        print("Bluad")
-        pass
+        self.statisticsWiget = StatisticsWiget(self.user)
+        self.statisticsWiget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        self.statisticsWiget.show()
 
 
     def update_billbordsGroops(self):
