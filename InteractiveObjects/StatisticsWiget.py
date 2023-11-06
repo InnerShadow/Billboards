@@ -31,8 +31,15 @@ class StatisticsWiget(QWidget):
 
 
     def update_ads_counts(self):
+
+        #ads_show_request = f"GET ALL SCHEDULES FOR user = {self.user.login}"
+        #ads_show_response = self.user.client.Get_response(ads_show_request)
+
+        ads_watched_request = "GET ADS WATCHED"
+        ads_watched_response = self.user.client.Get_response(ads_watched_request)
+
         ads_show_value = 42
-        ads_watched_value = 15 
+        ads_watched_value = int(ads_watched_response) 
 
         self.label_ads_show.setText(f"Ads show: {ads_show_value}")
         self.label_ads_watched.setText(f"Ads watched: {ads_watched_value}")
