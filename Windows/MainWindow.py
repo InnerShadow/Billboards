@@ -6,22 +6,25 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap, QCursor
 
-from ServerData.Client import *
-from Entity.BillBoard_groop import *
-from InteractiveObjects.Graphic_BillBoard import *
-from Entity.Schedules import *
 from Entity.User import User
+from Entity.Schedules import Schedules
+from Entity.BillBoard_groop import BillBoard_groop
+
+from InteractiveObjects.BillboardsHelpers.Graphic_BillBoard import GraphicBillboard
+
+from InteractiveObjects.Video.UploadVideoWidget import UploadVideoWidget
+
+from InteractiveObjects.MainWindowHelper.InfoWiget import InfoWiget
+from InteractiveObjects.MainWindowHelper.GroupComposer import GroupComposer
+from InteractiveObjects.MainWindowHelper.LogExportWidget import LogExportWidget
+from InteractiveObjects.MainWindowHelper.StatisticsWiget import StatisticsWiget
+from InteractiveObjects.MainWindowHelper.ScheduleComposer import ScheduleComposer
+from InteractiveObjects.MainWindowHelper.MemoryLimitWidget import MemoryLimitWidget
+from InteractiveObjects.MainWindowHelper.ChangePasswordWidget import ChangePasswordWidget
+from InteractiveObjects.MainWindowHelper.UserManagementWidget import UserManagementWidget
+from InteractiveObjects.MainWindowHelper.BillboardCreatorWidget import BillboardCreatorWidget
+
 from Windows.AuthenticationWindow import AuthenticationWindow
-from InteractiveObjects.ScheduleComposer import ScheduleComposer
-from InteractiveObjects.GroupComposer import GroupComposer
-from InteractiveObjects.ChangePasswordWidget import ChangePasswordWidget
-from InteractiveObjects.UploadVideoWidget import UploadVideoWidget
-from InteractiveObjects.BillboardCreatorWidget import BillboardCreatorWidget
-from InteractiveObjects.UserManagementWidget import UserManagementWidget
-from InteractiveObjects.MemoryLimitWidget import MemoryLimitWidget
-from InteractiveObjects.LogExportWidget import LogExportWidget
-from InteractiveObjects.InfoWiget import InfoWiget
-from InteractiveObjects.StatisticsWiget import StatisticsWiget
 
 class MainWindow(QMainWindow):
     billboard_w : int = 75

@@ -3,7 +3,8 @@ import re
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QHBoxLayout, QMenu, QMessageBox
 
-from InteractiveObjects.InsertAdDialog import InsertAdDialog
+from InteractiveObjects.MainWindowHelper.InsertAdDialog import InsertAdDialog
+
 from Entity.User import User
 from Entity.Schedules import Schedules
 

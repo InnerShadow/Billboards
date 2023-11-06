@@ -4,8 +4,8 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QListWidget, QListWidgetItem, QMenu, QAction
 
-from InteractiveObjects.TransferOwnershipWiget import TransferOwnershipWiget
-from InteractiveObjects.SetScheduleWidget import SetScheduleWidget
+from InteractiveObjects.BillboardsHelpers.TransferOwnershipWiget import TransferOwnershipWiget
+from InteractiveObjects.BillboardsHelpers.SetScheduleWidget import SetScheduleWidget
 from Entity.User import User
 
 class OwnerViewer(QWidget):

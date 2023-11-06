@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QComboBox, QMessa
 
 from Entity.User import User
 from Entity.Billboard import BillBoard
-from InteractiveObjects.GroupComposer import GroupComposer
+from InteractiveObjects.MainWindowHelper.GroupComposer import GroupComposer
 
 class BillboardGroupManager(QWidget):
     def __init__(self, user : User, billboard : BillBoard):

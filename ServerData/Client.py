@@ -64,3 +64,4 @@ class Client:
         except Exception as e:
             print(f"Error getting local IP address: {e}")
             return None
+

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QFileDialog, QMessageBox
 
 from Entity.User import User
-from InteractiveObjects.Video_uploader import VideoUploader
+from InteractiveObjects.Video.Video_uploader import VideoUploader
 
 class UploadVideoWidget(QWidget):
     def __init__(self, user: User):

@@ -2,7 +2,7 @@ import re
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QComboBox, QPushButton, QMessageBox
 from Entity.User import User
-from InteractiveObjects.ScheduleComposer import ScheduleComposer
+from InteractiveObjects.MainWindowHelper.ScheduleComposer import ScheduleComposer
 
 class GroupComposer(QWidget):
     accepted = pyqtSignal()

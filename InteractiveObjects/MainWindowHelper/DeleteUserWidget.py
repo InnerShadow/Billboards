@@ -3,7 +3,8 @@ import re
 from PyQt5.QtWidgets import QLabel, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QComboBox, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 
-from InteractiveObjects.PasswordDialog import PasswordDialog
+from InteractiveObjects.MainWindowHelper.PasswordDialog import PasswordDialog
+
 from Entity.User import User
 
 class DeleteUserWidget(QWidget):

@@ -10,14 +10,14 @@ from PyQt5.QtGui import QColor, QPen, QPixmap
 from Entity.Billboard import BillBoard
 from Entity.User import User
 from Entity.Schedules import Schedules
-from Entity.MP4FileManager import MP4FileManager
+from InteractiveObjects.Video.MP4FileManager import MP4FileManager
 
-from InteractiveObjects.Video_downloader import VideoDownloader
-from InteractiveObjects.Video_player import VideoPlayer
-from InteractiveObjects.ScheduleViewer import ScheduleViewer
-from InteractiveObjects.OwnerViewer import OwnerViewer
-from InteractiveObjects.ScheduleEditor import ScheduleEditor
-from InteractiveObjects.BillboardGroupManager import BillboardGroupManager
+from InteractiveObjects.Video.Video_player import VideoPlayer
+from InteractiveObjects.Video.Video_downloader import VideoDownloader
+from InteractiveObjects.BillboardsHelpers.OwnerViewer import OwnerViewer
+from InteractiveObjects.BillboardsHelpers.ScheduleViewer import ScheduleViewer
+from InteractiveObjects.BillboardsHelpers.ScheduleEditor import ScheduleEditor
+from InteractiveObjects.BillboardsHelpers.BillboardGroupManager import BillboardGroupManager
 
 class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, user : User):
@@ -35,7 +35,6 @@ class GraphicBillboard(QGraphicsRectItem):
 
     
     def init_ui(self):
-
         init_time = datetime.fromisoformat(self.user.client.Get_response("GET_TIME"))
 
         schedules_request = f"GET GROUP SCHEDULES schedules_name = {self.billboard.schedules_name}"

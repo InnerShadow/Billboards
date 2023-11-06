@@ -1,5 +1,4 @@
 import re
-from functools import partial
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QCompleter, QDialog, QPushButton, QMessageBox

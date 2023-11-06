@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QComboBox, QPushButton
 
 from Entity.User import User
 
-from InteractiveObjects.LogViewerWidget import LogViewerWidget
+from InteractiveObjects.MainWindowHelper.LogViewerWidget import LogViewerWidget
 
 class LogExportWidget(QWidget):
     def __init__(self, user : User):

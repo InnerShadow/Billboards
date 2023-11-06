@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QTextEdit, QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QDialog, QTextEdit, QVBoxLayout
 
 class LogViewerWidget(QDialog):
     def __init__(self, logs):

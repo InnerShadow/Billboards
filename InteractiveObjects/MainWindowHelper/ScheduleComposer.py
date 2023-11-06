@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QListWidget, QListWidgetItem, QHBoxLayout, QLineEdit, QMessageBox, QMenu
 
-from InteractiveObjects.InsertAdDialog import InsertAdDialog
+from InteractiveObjects.MainWindowHelper.InsertAdDialog import InsertAdDialog
 from Entity.User import User
 
 class ScheduleComposer(QWidget):

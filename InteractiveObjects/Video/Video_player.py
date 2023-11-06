@@ -5,10 +5,10 @@ import threading
 
 from moviepy.editor import VideoFileClip
 
-from InteractiveObjects.Video_downloader import VideoDownloader
+from InteractiveObjects.Video.Video_downloader import VideoDownloader
 
 from Entity.Schedules import Schedules
-from Entity.MP4FileManager import MP4FileManager
+from InteractiveObjects.Video.MP4FileManager import MP4FileManager
 from Entity.User import User
 
 class VideoPlayer:

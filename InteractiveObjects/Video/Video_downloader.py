@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from ServerData.Client import *
 
-from InteractiveObjects.VideoDownloaderWiget import VideoDownloaderWiget
+from InteractiveObjects.Video.VideoDownloaderWiget import VideoDownloaderWiget
 
 class VideoDownloader(QThread):
     finished = pyqtSignal()

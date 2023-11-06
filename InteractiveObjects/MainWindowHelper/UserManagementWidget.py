@@ -1,8 +1,8 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton
 
 from Entity.User import User
-from InteractiveObjects.CreateUserWidget import CreateUserWidget
-from InteractiveObjects.DeleteUserWidget import DeleteUserWidget
+from InteractiveObjects.MainWindowHelper.CreateUserWidget import CreateUserWidget
+from InteractiveObjects.MainWindowHelper.DeleteUserWidget import DeleteUserWidget
 
 class UserManagementWidget(QWidget):
     def __init__(self, user : User):

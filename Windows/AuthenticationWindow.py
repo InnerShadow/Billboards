@@ -1,13 +1,11 @@
 import re
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QLineEdit, QPushButton, QVBoxLayout, QVBoxLayout, QHBoxLayout, QMessageBox
 from PyQt5.QtCore import pyqtSignal
 
 from ServerData.Client import Client
 
 class AuthenticationWindow(QWidget):
-
     login_successful = pyqtSignal(str)
 
     def __init__(self, client : Client):
@@ -51,8 +49,6 @@ class AuthenticationWindow(QWidget):
         layout.addLayout(button_layout)
 
         self.setLayout(layout)
-        # self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        # self.activateWindow()
 
 
     def log_in(self):    

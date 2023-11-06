@@ -3,7 +3,7 @@ import re
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QComboBox, QPushButton, QLabel, QMessageBox
 
-from InteractiveObjects.GroupComposer import GroupComposer
+from InteractiveObjects.MainWindowHelper.GroupComposer import GroupComposer
 
 from Entity.User import User
 
