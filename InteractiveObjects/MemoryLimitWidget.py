@@ -34,10 +34,10 @@ class MemoryLimitWidget(QWidget):
         new_limit = self.new_memory_input.text()
         try:
             new_limit = int(new_limit)
-            if new_limit > 10:
+            if new_limit > 1:
                 self.current_memory_limit = new_limit
 
-                self.show_success_message(f"Memory limit change to {new_limit}")
+                self.show_success_message(f"Memory limit change to {new_limit} MB")
                 self.new_memory.emit(new_limit)
                 self.hide()
 

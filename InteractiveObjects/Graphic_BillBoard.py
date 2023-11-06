@@ -10,6 +10,8 @@ from PyQt5.QtGui import QColor, QPen, QPixmap
 from Entity.Billboard import BillBoard
 from Entity.User import User
 from Entity.Schedules import Schedules
+from Entity.MP4FileManager import MP4FileManager
+
 from InteractiveObjects.Video_downloader import VideoDownloader
 from InteractiveObjects.Video_player import VideoPlayer
 from InteractiveObjects.ScheduleViewer import ScheduleViewer
@@ -175,6 +177,10 @@ class GraphicBillboard(QGraphicsRectItem):
 
         if not os.path.exists(self.current_ad.vidio_url):
             self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.user.client, self.x_pos, self.y_pos)
+
+            self.mp4FileManager = MP4FileManager(self.current_ad.vidio_url)
+            self.mp4FileManager.manage_mp4_files()
+
             self.video_downloader.finished.connect(self.on_download_finished)
             self.video_downloader.start()
 
