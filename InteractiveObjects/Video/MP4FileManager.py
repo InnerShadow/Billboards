@@ -5,8 +5,12 @@ class MP4FileManager:
     def __init__(self, last_downloaded_mp4):
         self.last_downloaded_mp4 = last_downloaded_mp4
 
-        with open("Data/memory.txt", 'r') as f:
-            self.max_folder_size = int(f.read()) * 1024 * 1024
+        try:
+            with open("Data/memory.txt", 'r') as f:
+                self.max_folder_size = int(f.read()) * 1024 * 1024
+        
+        except Exception:
+            self.manage_mp4_files = 50 * 1024 * 1024
 
 
     #Get all .mp4 files
