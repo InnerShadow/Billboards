@@ -64,7 +64,7 @@ class VideoPlayer:
 
         if running:
             self.play_next()
-            
+
         else:
             pygame.quit()
 
@@ -81,6 +81,9 @@ class VideoPlayer:
             next_ad_id = 0
 
         self.next_ad = self.schedule.ad_queue[next_ad_id]
+
+        watch_request = f"WATCH AD ad = {self.next_ad.ad_name}"
+        _ = self.user.client.Get_response(watch_request)
 
         if not os.path.exists(self.next_ad.vidio_url):
             self.video_downloader = VideoDownloader(self.next_ad.vidio_url, self.user.client, self.x_pos, self.y_pos)
