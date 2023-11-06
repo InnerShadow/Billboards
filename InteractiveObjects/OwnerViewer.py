@@ -36,12 +36,12 @@ class OwnerViewer(QWidget):
         owner_label.setAlignment(Qt.AlignCenter)
         layout.addWidget(owner_label)
 
-        groups_list = QListWidget(self)
-        layout.addWidget(groups_list)
+        self.groups_list = QListWidget(self)
+        layout.addWidget(self.groups_list)
 
         for group_name, billboard_count in zip(self.groops, self.counts):
             item = QListWidgetItem(f"Group: {group_name}, Num of billboards: {billboard_count}")
-            groups_list.addItem(item)
+            self.groups_list.addItem(item)
 
             if self.billboards_groop_name != group_name:
                 item.setForeground(QColor(128, 128, 128))
@@ -49,8 +49,8 @@ class OwnerViewer(QWidget):
         self.setLayout(layout)
 
         if self.user.role == 'admin' or self.owner_name == self.user.login:
-            groups_list.setContextMenuPolicy(Qt.CustomContextMenu)
-            groups_list.customContextMenuRequested.connect(self.show_context_menu)
+            self.groups_list.setContextMenuPolicy(Qt.CustomContextMenu)
+            self.groups_list.customContextMenuRequested.connect(self.show_context_menu)
 
 
     def deparse_response(self, response : str):
@@ -66,9 +66,17 @@ class OwnerViewer(QWidget):
 
     def show_context_menu(self, pos):
         list_widget = self.sender()
-        item = list_widget.itemAt(pos)
+        item = list_widget.currentItem()
 
-        if item:
+        chosenGroupPattern = r'Group: (\w+)' 
+        current_chose = self.groups_list.currentItem().text()
+
+        chosenGroupMatch = re.search(chosenGroupPattern, current_chose)
+
+        if item and chosenGroupMatch:
+
+            self.schosen_group = chosenGroupMatch.group(1)
+
             context_menu = QMenu(self)
             transfer_action = QAction("Transfer Ownership", self)
             transfer_action.triggered.connect(self.transfer_ownership)
@@ -77,27 +85,42 @@ class OwnerViewer(QWidget):
             setSchedulesAction = QAction("Set Schedule", self)
             setSchedulesAction.triggered.connect(self.setSchedules)
             context_menu.addAction(setSchedulesAction)
+            
             context_menu.exec_(list_widget.mapToGlobal(pos))
 
 
     def setSchedules(self):
-        self.setWiget = SetScheduleWidget(self.user, self.billboards_groop_name)
+        self.setWiget = SetScheduleWidget(self.user, self.schosen_group)
         self.setWiget.move(self.x(), self.y())
         self.setWiget.show()
 
-        self.setWiget.set_signal.connect(self.updateInfo)
+        #self.setWiget.set_signal.connect(self.updateInfo)
 
 
     def transfer_ownership(self):
-        self.transferWiget = TransferOwnershipWiget(self.user, self.billboards_groop_name)
+        self.transferWiget = TransferOwnershipWiget(self.user, self.schosen_group)
         self.transferWiget.move(self.x(), self.y())
         self.transferWiget.show()
 
-        self.transferWiget.transer_signal.connect(self.updateInfo)
+        self.transferWiget.transer_signal.connect(self.hide)
+
+
+    def deparseServerResponse(self):
+        groop_owner_request = f"GET GROOP BY OWNER owner = {self.owner_name}"
+        groop_owner_repsnose = self.user.client.Get_response(groop_owner_request)
+
+        self.groops = []
+        self.counts = []
+
+        self.deparse_response(groop_owner_repsnose)
 
     
-    def updateInfo(self, new_owner_name: str):
-        self.owner_name = new_owner_name
+    def updateInfo(self, new_owner_name: str, billboard_group : str):
+        if self.billboards_groop_name == billboard_group:
+            self.owner_name = new_owner_name
+
+        self.deparseServerResponse()
+
         self.clearInfo()
         self.createInfo()
 

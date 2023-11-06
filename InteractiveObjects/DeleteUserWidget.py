@@ -74,7 +74,7 @@ class DeleteUserWidget(QWidget):
         if loggedin:
             deleteRequest = f"DELETE USER name = {self.selected_user}"
             _ = self.user.client.Get_response(deleteRequest)
-            self.show_success_message(f"User {self.selected_user} has been deleted!")
+            self.show_success_message(f"User {self.selected_user} has been deleted)")
             self.hide()
             self.deleted.emit()
 

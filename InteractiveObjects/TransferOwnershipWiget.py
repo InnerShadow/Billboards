@@ -8,8 +8,7 @@ from PyQt5.QtCore import pyqtSignal
 from Entity.User import User
 
 class TransferOwnershipWiget(QWidget):
-
-    transer_signal = pyqtSignal(str)
+    transer_signal = pyqtSignal(str, str)
 
     def __init__(self, user: User, billboards_group : str):
         super().__init__()
@@ -101,7 +100,7 @@ class TransferOwnershipWiget(QWidget):
             _ = self.user.client.Get_response(transfer_request)
             self.show_success_message('Ownership transferred successfully.')
             dialog.accept()
-            self.transer_signal.emit(selected_user)
+            self.transer_signal.emit(selected_user, self.billboards_group)
             self.hide()
 
         else:

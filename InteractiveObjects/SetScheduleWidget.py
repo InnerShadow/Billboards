@@ -32,8 +32,8 @@ class SetScheduleWidget(QWidget):
         self.create_schedule_button.clicked.connect(self.create_schedule)
 
         layout.addWidget(self.schedule_combo)
-        layout.addWidget(self.set_schedule_button)
         layout.addWidget(self.create_schedule_button)
+        layout.addWidget(self.set_schedule_button)
 
         self.setLayout(layout)
         self.fill_schedules()
