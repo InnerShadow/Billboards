@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -33,6 +34,7 @@ class MainWindow(QMainWindow):
         self.waiting_for_create_billboard = False
 
         self.memoryLimit : int = self.loadMemoryLimit()
+        self.last_update : datetime = datetime.now()
 
         self.initClient()
         self.initBillboards()
@@ -91,6 +93,10 @@ class MainWindow(QMainWindow):
 
         self.scene = QGraphicsScene()
         self.view.setScene(self.scene)
+
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.tryUpdateBillboards)
+        self.timer.start(2000)
 
         self.login_window = AuthenticationWindow(self.user.client)
 
@@ -295,6 +301,23 @@ class MainWindow(QMainWindow):
                                             self.statistica_button.width(), self.statistica_button.height())
         
     
+    def update_billbordsGroops(self):
+        self.billboards_groops = []
+        self.initBillboards()
+        self.updateGraphicsItems()
+
+        
+    def tryUpdateBillboards(self):
+        update_request = f"GET LAST UPDATE"
+        update_response = self.user.client.Get_response(update_request)
+
+        last_server_update = datetime.fromisoformat(update_response)
+
+        if self.last_update < last_server_update:
+            self.update_billbordsGroops()
+            self.last_update = last_server_update
+        
+    
     def showInfo(self):
         self.infoWiget = InfoWiget()
         self.infoWiget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
@@ -305,12 +328,6 @@ class MainWindow(QMainWindow):
         self.statisticsWiget = StatisticsWiget(self.user)
         self.statisticsWiget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.statisticsWiget.show()
-
-
-    def update_billbordsGroops(self):
-        self.billboards_groops = []
-        self.initBillboards()
-        self.updateGraphicsItems()
 
 
     def showScheduleComposer(self):
