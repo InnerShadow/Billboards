@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 from Entity.User import User
 
+#Wiget that hepls user to change password
 class ChangePasswordWidget(QWidget):
     def __init__(self, user: User):
         super().__init__()
@@ -9,6 +10,7 @@ class ChangePasswordWidget(QWidget):
         self.init_ui()
 
 
+    #init all necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -42,8 +44,8 @@ class ChangePasswordWidget(QWidget):
         self.resize(225, 30)
 
 
+    #Perform passwords chenges
     def change_password(self):
-
         fields_to_check = [
             self.old_password_input,
             self.new_password_input,
@@ -54,6 +56,7 @@ class ChangePasswordWidget(QWidget):
         white_style = "QLineEdit { background-color: white; }"
         all_fields_valid = True
 
+        #Check if some fileds are empty
         for field in fields_to_check:
             if not field.text():
                 field.setStyleSheet(red_style)
@@ -69,6 +72,7 @@ class ChangePasswordWidget(QWidget):
         new_password = self.new_password_input.text()
         confirm_password = self.confirm_password_input.text()
 
+        #Check if new password and confirmeation password are the asme
         if new_password != confirm_password:
             self.new_password_input.setStyleSheet(red_style)
             self.confirm_password_input.setStyleSheet(red_style)
@@ -76,6 +80,7 @@ class ChangePasswordWidget(QWidget):
             self.show_error_message("New passwords do not match. Please confirm the new password.")
             return
 
+        #Ask server to change password
         change_password_request = f"USER name = {self.user.login} CHANGE PASSWORD FROM old = {old_password}, TO new = {new_password}"
         change_password_response = self.user.client.Get_response(change_password_request)
 
@@ -89,7 +94,7 @@ class ChangePasswordWidget(QWidget):
             self.confirm_password_input.setStyleSheet(white_style)
             self.show_error_message(change_password_response)
 
-
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -99,6 +104,7 @@ class ChangePasswordWidget(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

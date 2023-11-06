@@ -4,6 +4,7 @@ from Entity.User import User
 from InteractiveObjects.MainWindowHelper.CreateUserWidget import CreateUserWidget
 from InteractiveObjects.MainWindowHelper.DeleteUserWidget import DeleteUserWidget
 
+#Handler of 'Users menu'
 class UserManagementWidget(QWidget):
     def __init__(self, user : User):
         super().__init__()
@@ -13,6 +14,7 @@ class UserManagementWidget(QWidget):
         self.initUI()
 
 
+    #Init necessary graphics items
     def initUI(self):
         layout = QVBoxLayout()
 
@@ -32,6 +34,7 @@ class UserManagementWidget(QWidget):
         self.resize(200, 75)
 
 
+    #Open users creation wiget
     def create_user_clicked(self):
         self.createUserWidget = CreateUserWidget(self.user)
         self.createUserWidget.move(self.x(), self.y())
@@ -39,6 +42,7 @@ class UserManagementWidget(QWidget):
         self.createUserWidget.created.connect(self.hide)
 
 
+    #Open users deliten wiget)
     def delete_user_clicked(self):
         self.deleteUserWidget = DeleteUserWidget(self.user)
         self.deleteUserWidget.move(self.x(), self.y())

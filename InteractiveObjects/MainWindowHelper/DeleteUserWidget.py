@@ -7,6 +7,7 @@ from InteractiveObjects.MainWindowHelper.PasswordDialog import PasswordDialog
 
 from Entity.User import User
 
+#Handler of users deletion
 class DeleteUserWidget(QWidget):
     deleted = pyqtSignal()
 
@@ -18,6 +19,7 @@ class DeleteUserWidget(QWidget):
         self.initUI()
 
 
+    #Init all necessary graphics items
     def initUI(self):
         layout = QVBoxLayout()
 
@@ -46,6 +48,7 @@ class DeleteUserWidget(QWidget):
         self.setLayout(layout)
 
 
+    #Ask server about all usres and fill como box
     def fillCombo(self):
         getUsersRequest = f"GET ALL USERS"
         getUsersResponse = self.user.client.Get_response(getUsersRequest)
@@ -62,6 +65,7 @@ class DeleteUserWidget(QWidget):
         self.user_combobox.addItems(user_list)
 
 
+    #Ask admin about password to delete some one
     def confirm_delete(self):
         self.selected_user = self.user_combobox.currentText()
         self.passwordDialog = PasswordDialog(self, self.selected_user, self.user)
@@ -71,6 +75,7 @@ class DeleteUserWidget(QWidget):
         self.passwordDialog.loggedin.connect(self.doDelite)
 
     
+    #Perform deletion)
     def doDelite(self, loggedin : bool):
         if loggedin:
             deleteRequest = f"DELETE USER name = {self.selected_user}"
@@ -80,6 +85,7 @@ class DeleteUserWidget(QWidget):
             self.deleted.emit()
 
     
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)
@@ -89,6 +95,7 @@ class DeleteUserWidget(QWidget):
         success_dialog.exec_()
         
 
+    #Handle close button clicked
     def cancel_clicked(self):
         self.close()
 

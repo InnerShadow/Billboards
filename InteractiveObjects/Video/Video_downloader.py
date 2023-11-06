@@ -3,6 +3,7 @@ from ServerData.Client import *
 
 from InteractiveObjects.Video.VideoDownloaderWiget import VideoDownloaderWiget
 
+#Video dounloader handler
 class VideoDownloader(QThread):
     finished = pyqtSignal()
 
@@ -15,6 +16,7 @@ class VideoDownloader(QThread):
         self.y = y
 
 
+    #Ask server to dounloader necessary video
     def run(self):
         self.videoDownloaderWiget = VideoDownloaderWiget(self.x, self.y)
         ad_request = f"GET AD ad_path = {self.video_url}"

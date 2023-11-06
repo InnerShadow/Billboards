@@ -27,12 +27,14 @@ from InteractiveObjects.MainWindowHelper.BillboardCreatorWidget import Billboard
 from Windows.AuthenticationWindow import AuthenticationWindow
 
 class MainWindow(QMainWindow):
+    #Static billboards param
     billboard_w : int = 75
     billboard_h : int = 40 
 
     def __init__(self):
         super().__init__()
 
+        #Init data
         self.billboards_groops : list[BillBoard_groop] = [] 
         self.waiting_for_create_billboard = False
 
@@ -45,43 +47,10 @@ class MainWindow(QMainWindow):
 
         self.show()
 
-        self.show_login_window()
+        self.showLoginWindow()
 
 
-    def initClient(self):
-        self.user = User('viewer', 'viewer')
-        #print(self.user.client.get_ip_address())
-
-
-    def initBillboards(self):
-        groop_pattern = r'Group: ([\w\s_]+), Owner: [\w\s_]+, Schedule: ([\w\s_]+)'
-        groop_response = self.user.client.Get_response('GET_BILLBOARDS')
-
-        for match in re.finditer(groop_pattern, groop_response):
-            groop_name = match.group(1)
-            schedules_name = match.group(2)
-
-            schedules_request = f"GET GROUP SCHEDULES schedules_name = {schedules_name}"
-            schedules_repsnose = self.user.client.Get_response(schedules_request)
-
-            if_add = True
-
-            for i in self.billboards_groops:
-                if i.groop_name == groop_name and i.schedules.schedules_name == schedules_name:
-                    if_add = False
-
-            if if_add:
-                schedules = Schedules(schedules_name)
-                schedules.fill_from_response(schedules_repsnose)
-
-                groop = BillBoard_groop(groop_name, schedules)
-                self.billboards_groops.append(groop)
-
-
-        for i in self.billboards_groops:
-            i.fill_BillBoards(groop_response)
-            
-
+    #Init all visible objects
     def initUI(self):
         self.setWindowTitle('BillBoards')
         self.setWindowState(Qt.WindowFullScreen)
@@ -117,18 +86,55 @@ class MainWindow(QMainWindow):
         self.resizeEvent = self.handleResize
 
 
+    #Create client, firstly as viewer
+    def initClient(self):
+        self.user = User('viewer', 'viewer')
+        #print(self.user.client.get_ip_address())
+
+
+    #Ask server about billboards, fill nesessary data & draw billboards
+    def initBillboards(self):
+        groop_pattern = r'Group: ([\w\s_]+), Owner: [\w\s_]+, Schedule: ([\w\s_]+)'
+        groop_response = self.user.client.Get_response('GET_BILLBOARDS')
+
+        for match in re.finditer(groop_pattern, groop_response):
+            groop_name = match.group(1)
+            schedules_name = match.group(2)
+
+            schedules_request = f"GET GROUP SCHEDULES schedules_name = {schedules_name}"
+            schedules_repsnose = self.user.client.Get_response(schedules_request)
+
+            if_add = True
+
+            for i in self.billboards_groops:
+                if i.groop_name == groop_name and i.schedules.schedules_name == schedules_name:
+                    if_add = False
+
+            if if_add:
+                schedules = Schedules(schedules_name)
+                schedules.fill_from_response(schedules_repsnose)
+
+                groop = BillBoard_groop(groop_name, schedules)
+                self.billboards_groops.append(groop)
+
+
+        for i in self.billboards_groops:
+            i.fill_BillBoards(groop_response)
+            
+
+    #Fill all necessary options in menu bar
     def init_menuBar(self):
         log_in_action = QAction('Log In', self)
-        log_in_action.triggered.connect(self.show_login_window)
+        log_in_action.triggered.connect(self.showLoginWindow)
 
         change_password_action = QAction('Change password', self)
-        change_password_action.triggered.connect(self.show_change_password)
+        change_password_action.triggered.connect(self.showChangePassword)
 
         memory_limit_action = QAction('Set Memory Limit', self)
-        memory_limit_action.triggered.connect(self.show_memory_limit)
+        memory_limit_action.triggered.connect(self.showMemoryLimit)
 
         export_logs_action = QAction('Export logs', self)
-        export_logs_action.triggered.connect(self.show_export_logs)
+        export_logs_action.triggered.connect(self.showExportLogs)
 
         menubar = self.menuBar()
 
@@ -145,6 +151,7 @@ class MainWindow(QMainWindow):
         logs_menu.addAction(export_logs_action)
 
 
+    #Init infi button
     def init_info(self):
         self.info_button = QPushButton('Info', self)
         self.info_button.clicked.connect(self.showInfo)
@@ -153,6 +160,7 @@ class MainWindow(QMainWindow):
         self.info_button.show()
 
 
+    #Init Statistics button
     def init_statistics(self):
         self.statistica_button = QPushButton('Show statistics', self)
         self.statistica_button.clicked.connect(self.showStatistics)
@@ -161,6 +169,7 @@ class MainWindow(QMainWindow):
         self.statistica_button.show()
 
     
+    #Init Create schedules button
     def init_createSchedules(self):
         self.create_schedules_button = QPushButton('Create schedules', self)
         self.create_schedules_button.clicked.connect(self.showScheduleComposer)
@@ -169,6 +178,7 @@ class MainWindow(QMainWindow):
         self.create_schedules_button.hide()
 
 
+    #Init create group button
     def init_createGroup(self):
         self.create_group_button = QPushButton('Create group', self)
         self.create_group_button.clicked.connect(self.showGroupComposer)
@@ -177,6 +187,7 @@ class MainWindow(QMainWindow):
         self.create_group_button.hide()
 
 
+    #Init ypload Ad button
     def init_uploadAd(self):
         self.uploadAd_button = QPushButton('Upload ad', self)
         self.uploadAd_button.clicked.connect(self.showUploadAd)
@@ -185,22 +196,25 @@ class MainWindow(QMainWindow):
         self.uploadAd_button.hide()
 
     
+    #Init create billboard button
     def init_createBillboardButton(self):
         self.create_billboard_button = QPushButton('Create Billboard', self)
-        self.create_billboard_button.clicked.connect(self.show_create_billboard_instructions)
+        self.create_billboard_button.clicked.connect(self.showCreateBillboardInstructions)
         self.create_billboard_button.setFixedWidth(125)
         self.create_billboard_button.setFixedHeight(30)
         self.create_billboard_button.hide()
 
-    
+
+    #Init users menu bitton    
     def init_usersMenuButton(self):
         self.user_menu_button = QPushButton('Users Menu', self)
-        self.user_menu_button.clicked.connect(self.show_user_menu)
+        self.user_menu_button.clicked.connect(self.showUserMenu)
         self.user_menu_button.setFixedWidth(125)
         self.user_menu_button.setFixedHeight(30)
         self.user_menu_button.hide()
 
 
+    #Init beckground
     def init_beckground(self):
         self.background_image = QPixmap('Data/Jodino.png')
         self.background_item = QGraphicsPixmapItem(self.background_image)
@@ -208,52 +222,64 @@ class MainWindow(QMainWindow):
         self.scene.addItem(self.background_item)
 
 
+    #Init Exit button
     def init_close_button(self):
         self.close_button = QPushButton('Exit', self)
         self.close_button.clicked.connect(self.doExit)
         
 
+    #Resizer of beckground when window geometry is changes
     @pyqtSlot()
     def handleResize(self, event):
         self.updateGraphicsItems()
 
     
+    #Check if create billboard options is used
+    #Then create a billborad
+    #Else do nothig
     def mousePressEvent(self, event):
         if self.waiting_for_create_billboard and event.button() == Qt.LeftButton:
-            self.create_billboard()
+            self.createBillboard()
             self.waiting_for_create_billboard = False 
 
 
+    #Update all nedded graphics items
     def updateGraphicsItems(self):
         bg_width = self.view.viewport().width()
         bg_height = self.view.viewport().height()
 
+        #Update base graphics items
         self.updateCloseButton(bg_width)
         self.updateBeackground(bg_width, bg_height)
         self.clearScene()
         self.updateBillboards(bg_width, bg_height)
-        self.update_login_window()
+        self.updateLoginWindow()
         self.updateInfo()
         self.updateStatistics()
 
+        #Update graphics items for owner & admin
         if self.user.role == 'owner' or self.user.role == 'admin':
-            self.update_create_schedules()
-            self.update_create_group()
-            self.update_UploadAd()
+            self.updateCreateSchedules()
+            self.updateCreateGroup()
+            self.updateUploadAd()
 
+        #Update graphics items only for admin
         if self.user.role == 'admin':
-            self.update_CreateBillboards()
-            self.update_user_menu()
+            self.updateCreateBillboards()
+            self.updateUserMenu()
 
 
+    #Beackground updader
     def updateBeackground(self, bg_width : int, bg_height : int):
         self.background_item.setPixmap(self.background_image.scaled(bg_width, bg_height, Qt.KeepAspectRatio))
 
 
+    #Close button updader
     def updateCloseButton(self, bg_width : int):
         self.close_button.setGeometry(bg_width - 90, self.view.viewport().height(), self.close_button.width(), self.close_button.height())
 
 
+    #Billboards updader
     def updateBillboards(self, x_scale : int, y_scale):
         for groop in self.billboards_groops:
             for billboard in groop.BillBoards:
@@ -265,105 +291,124 @@ class MainWindow(QMainWindow):
                 self.scene.addItem(graphic_billboard)
 
     
-    def update_login_window(self):
+    #Login updader
+    def updateLoginWindow(self):
         self.login_window.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
 
     
-    def update_create_schedules(self):
+    #Schedules updader
+    def updateCreateSchedules(self):
         self.create_schedules_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2, 
                                                  self.create_schedules_button.width(), self.create_schedules_button.height())
         
     
-    def update_create_group(self):
+    #Groups updader
+    def updateCreateGroup(self):
         self.create_group_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 + 30 + 25, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
         
 
-    def update_UploadAd(self):
+    #Upload updader
+    def updateUploadAd(self):
         self.uploadAd_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 30 - 25, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
         
     
-    def update_CreateBillboards(self):
+    #Create billboard updader
+    def updateCreateBillboards(self):
         self.create_billboard_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 - 60 - 50, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
         
 
-    def update_user_menu(self):
+    #Users menu updader
+    def updateUserMenu(self):
         self.user_menu_button.setGeometry(self.view.viewport().width() - 135, self.view.viewport().height() // 2 + 60 + 50, 
                                             self.create_schedules_button.width(), self.create_schedules_button.height())
 
     
+    #Info updader
     def updateInfo(self):
         self.info_button.setGeometry(30, self.view.viewport().height() // 2 + 27, 
                                             self.info_button.width(), self.info_button.height())
         
     
+    #Statistics updader
     def updateStatistics(self):
         self.statistica_button.setGeometry(30, self.view.viewport().height() // 2 - 27, 
                                             self.statistica_button.width(), self.statistica_button.height())
         
     
-    def update_billbordsGroops(self):
+    #Clear all billboards and ask sever to get new grousp
+    def updateBillbordsGroops(self):
         self.billboards_groops = []
         self.initBillboards()
         self.updateGraphicsItems()
 
-        
+    
+    #Check if last server update younger then current last update
     def tryUpdateBillboards(self):
         update_request = f"GET LAST UPDATE"
         update_response = self.user.client.Get_response(update_request)
 
         last_server_update = datetime.fromisoformat(update_response)
 
+        #If younger the ask server to get new information about billboards
         if self.last_update < last_server_update:
-            self.update_billbordsGroops()
+            self.updateBillbordsGroops()
             self.last_update = last_server_update
         
     
+    #Show info wiget
     def showInfo(self):
         self.infoWiget = InfoWiget()
         self.infoWiget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.infoWiget.show()
 
 
+    #show statistics wiget
     def showStatistics(self):
         self.statisticsWiget = StatisticsWiget(self.user)
         self.statisticsWiget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.statisticsWiget.show()
 
 
+    #Show schedule composer wiget
     def showScheduleComposer(self):
         self.scheduleComposer = ScheduleComposer(self.user)
         self.scheduleComposer.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.scheduleComposer.show()
 
 
+    #Show group composer wiget
     def showGroupComposer(self):
         self.scheduleComposer = GroupComposer(self.user)
         self.scheduleComposer.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.scheduleComposer.show()
 
     
+    #Show ad uploader wiget
     def showUploadAd(self):
         self.uploadVideoWidget = UploadVideoWidget(self.user)
         self.uploadVideoWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.uploadVideoWidget.show()
 
 
-    def show_user_menu(self):
+    #Sgow users menu wiget
+    def showUserMenu(self):
         self.userManagementWidget = UserManagementWidget(self.user)
         self.userManagementWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.userManagementWidget.show()
 
     
-    def show_create_billboard_instructions(self):
+    #Show Message box that inform how to create a billboard
+    def showCreateBillboardInstructions(self):
         instructions = "Click on the map to create a billboard."
         QMessageBox.information(self, "Create Billboard Instructions", instructions)
         self.waiting_for_create_billboard = True
 
     
-    def show_login_window(self):
+    #Show log in wiget
+    def showLoginWindow(self):
         self.updateGraphicsItems()
         self.login_window = AuthenticationWindow(self.user.client)
         self.login_window.show()
@@ -371,8 +416,10 @@ class MainWindow(QMainWindow):
         self.login_window.login_successful.connect(self.handle_login_success)
 
     
-    def show_change_password(self):
+    #Show change password widget
+    def showChangePassword(self):
         if self.user.role == 'viewer':
+            #Only if user not viewer
             self.passwordChangeFailed()
 
         else:
@@ -381,14 +428,16 @@ class MainWindow(QMainWindow):
             self.changePasswordWidget.show()
 
 
-    def show_memory_limit(self):
+    #Show memory limit wiget
+    def showMemoryLimit(self):
         self.memoryLimitWidget = MemoryLimitWidget(self.memoryLimit)
         self.memoryLimitWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         self.memoryLimitWidget.new_memory.connect(self.setMemoryLimit)
         self.memoryLimitWidget.show()
 
     
-    def show_export_logs(self):
+    #Show log export wiget for admins only
+    def showExportLogs(self):
         if self.user.role != 'admin':
             self.exportLogsFailed()
         
@@ -398,12 +447,14 @@ class MainWindow(QMainWindow):
             self.logExportWidget.show()
 
 
+    #Remove all graphics imeps from the scene
     def clearScene(self):
         for item in self.scene.items():
             if isinstance(item, QGraphicsRectItem):
                 self.scene.removeItem(item)
 
     
+    #Error about log export
     def exportLogsFailed(self):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -412,7 +463,8 @@ class MainWindow(QMainWindow):
         error_dialog.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
         error_dialog.exec_()
             
-        
+    
+    #Error about password change
     def passwordChangeFailed(self):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -422,6 +474,7 @@ class MainWindow(QMainWindow):
         error_dialog.exec_()
 
 
+    #Error about billboards creation
     def createBillboardFail(self):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -431,6 +484,7 @@ class MainWindow(QMainWindow):
         error_dialog.exec_()
     
 
+    #Success in log in 
     def handle_login_success(self, response : str):
         login_patter = r'Logged in successfully username = (\w+), role = (\w+)'
         login_match = re.search(login_patter, response)
@@ -449,7 +503,8 @@ class MainWindow(QMainWindow):
         self.updateGraphicsItems()
 
 
-    def create_billboard(self):
+    #Create billboard heandler
+    def createBillboard(self):
         if self.user.role != 'admin':
             self.createBillboardFail()
 
@@ -464,13 +519,15 @@ class MainWindow(QMainWindow):
             self.billboardCreatorWidget = BillboardCreatorWidget(self.user, x, y)
             self.billboardCreatorWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
             self.billboardCreatorWidget.show()
-            self.billboardCreatorWidget.created.connect(self.update_billbordsGroops)
+            self.billboardCreatorWidget.created.connect(self.updateBillbordsGroops)
 
 
+    #Memory setter
     def setMemoryLimit(self, new_limit : int):
         self.memoryLimit = new_limit
 
 
+    #Memory loader
     def loadMemoryLimit(self):
         try:
             with open("Data/memory.txt", 'r') as f:
@@ -480,6 +537,7 @@ class MainWindow(QMainWindow):
             return 50
         
 
+    #Exit button handler
     def doExit(self):
         exit_request = f"EXIT APP"
         _ = self.user.client.Get_response(exit_request)

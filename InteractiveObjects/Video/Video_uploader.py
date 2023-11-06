@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from ServerData.Client import Client
 
+#Handle of video uploader action
 class VideoUploader(QThread):
     finished = pyqtSignal(str)
 
@@ -12,6 +13,7 @@ class VideoUploader(QThread):
         self.client = client
 
 
+    #Uploaed necessary file on server
     def run(self):
         ad_response = self.client.Send_ad(self.video_name, self.video_url)
         self.finished.emit(ad_response)

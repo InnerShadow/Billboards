@@ -1,6 +1,7 @@
 
 from ServerData.Client import Client
 
+#Simple user container
 class User:
     client : Client = Client("127.0.0.1", 2000)
 

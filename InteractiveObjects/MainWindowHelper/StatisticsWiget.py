@@ -3,6 +3,7 @@ from PyQt5.QtCore import QTimer
 
 from Entity.User import User
 
+#Handler of 'Show statistics' button
 class StatisticsWiget(QWidget):
     def __init__(self, user : User):
         super().__init__()
@@ -12,6 +13,7 @@ class StatisticsWiget(QWidget):
         self.init_ui()
 
     
+    #Init necessary graphics items
     def init_ui(self):
         self.setWindowTitle("Statistics")
 
@@ -30,6 +32,7 @@ class StatisticsWiget(QWidget):
         self.resize(200, 75)
 
 
+    #Ask server about SHOWED and WATCHED ads
     def update_ads_counts(self):
         ads_show_request = f"GET ADS SHOWED"
         ads_show_response = self.user.client.Get_response(ads_show_request)
@@ -44,6 +47,7 @@ class StatisticsWiget(QWidget):
         self.label_ads_watched.setText(f"Ads watched: {ads_watched_value}")
 
 
+    #Perform exit
     def closeEvent(self, event):
         self.timer.stop()
         event.accept()

@@ -7,6 +7,7 @@ from InteractiveObjects.MainWindowHelper.GroupComposer import GroupComposer
 
 from Entity.User import User
 
+#Handle 'Create billboard' button clicked
 class BillboardCreatorWidget(QWidget):
     created = pyqtSignal()
 
@@ -20,6 +21,7 @@ class BillboardCreatorWidget(QWidget):
         self.init_ui()
 
 
+    #Init all necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -54,11 +56,13 @@ class BillboardCreatorWidget(QWidget):
         self.resize(300, 150) 
 
 
+    #Fill combo box to choose user
     def fill_user_combo(self):
         user_list = self.get_user_list()
         self.user_combo.addItems(user_list)
 
 
+    #Update user list in combo box
     def update_group_combo(self):
         selected_user = self.user_combo.currentText()
         group_list = self.get_group_list(selected_user)
@@ -67,6 +71,7 @@ class BillboardCreatorWidget(QWidget):
         self.group_combo.addItems(group_list)
 
 
+    #Perform billboard creation
     def create_billboard(self):
         selected_user = self.user_combo.currentText()
         selected_group = self.group_combo.currentText()
@@ -83,6 +88,7 @@ class BillboardCreatorWidget(QWidget):
             self.show_error_message(create_response)
 
 
+    #Ask server about all users
     def get_user_list(self):
         owners_request = "GET OWNERS"
         owners_response = self.user.client.Get_response(owners_request) + " "
@@ -96,6 +102,7 @@ class BillboardCreatorWidget(QWidget):
         return users_list
 
 
+    #Ask server about all groups for user and Noone groups
     def get_group_list(self, selected_user):
         groops_request = f"GET ALL GROOPS for user = {selected_user}"
         groups_response = self.user.client.Get_response(groops_request)
@@ -110,6 +117,7 @@ class BillboardCreatorWidget(QWidget):
         return groops_list
 
 
+    #Perform group creation handler if need to create new group
     def createGroup(self):
         self.groupComposer = GroupComposer(self.user)
         self.groupComposer.move(self.x(), self.y())
@@ -117,6 +125,7 @@ class BillboardCreatorWidget(QWidget):
         self.groupComposer.accepted.connect(self.update_group_combo)
 
 
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox(self)
         error_dialog.setWindowTitle('Error')
@@ -127,6 +136,7 @@ class BillboardCreatorWidget(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox(self)
         success_dialog.setWindowTitle('Success')

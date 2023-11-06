@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QLabel, QDialog, QVBoxLayout, QHBoxLayout, QPushButt
 
 from Entity.User import User
 
+#Check password handler (when try to delete someone)
 class PasswordDialog(QDialog):
     loggedin = pyqtSignal(bool)
 
@@ -14,6 +15,7 @@ class PasswordDialog(QDialog):
         self.initUI()
 
 
+    #Init all necessary graphics items
     def initUI(self):
         layout = QVBoxLayout()
 
@@ -41,6 +43,7 @@ class PasswordDialog(QDialog):
         self.setLayout(layout)
 
     
+    #Check password from the server when try to delete someone
     def ok_connect(self):
         password = self.password_input.text()
         confirmPasswordRequest = f"TRY TO LOG IN login = {self.user.login}, password = {password}"
@@ -57,6 +60,7 @@ class PasswordDialog(QDialog):
             self.show_error_message("Wrong Password")
 
 
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -66,6 +70,7 @@ class PasswordDialog(QDialog):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

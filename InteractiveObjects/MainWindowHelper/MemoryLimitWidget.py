@@ -1,6 +1,7 @@
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QPushButton, QLineEdit, QLabel
 
+#Memory limit handler
 class MemoryLimitWidget(QWidget):
     new_memory = pyqtSignal(int)
 
@@ -11,6 +12,7 @@ class MemoryLimitWidget(QWidget):
         self.initUI()
 
 
+    #Init all necessary graphics items
     def initUI(self):
         layout = QVBoxLayout()
 
@@ -30,6 +32,7 @@ class MemoryLimitWidget(QWidget):
         self.setLayout(layout)
 
 
+    #Perform memory setter
     def set_memory_limit(self):
         new_limit = self.new_memory_input.text()
         try:
@@ -51,12 +54,14 @@ class MemoryLimitWidget(QWidget):
             self.show_error_message("Memory limit must be positive integer")
 
 
+    #Update current memory limit
     def update_ui(self):
         current_memory_label = self.findChild(QLabel)
         if current_memory_label:
             current_memory_label.setText(f"Current Memory Limit: {self.current_memory_limit} MB")
 
 
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -66,6 +71,7 @@ class MemoryLimitWidget(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QVBoxLayout, QListWidget, QDialog, QDialogButtonBox, QLineEdit
 from Entity.User import User
 
+#Handler of add ad button
 class InsertAdDialog(QDialog):
     def __init__(self, advertisement_names : list[str], user : User):
         super().__init__()
@@ -13,6 +14,7 @@ class InsertAdDialog(QDialog):
         self.show()
 
 
+    #Init all necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -36,11 +38,13 @@ class InsertAdDialog(QDialog):
         self.setWindowTitle("Choose ad")
 
 
+    #Handle selected ad
     def select_advertisement(self, item):
         self.selected_ad = item.text()
         self.accept()
 
 
+    #Perform filter
     def filter_advertisements(self):
         search_text = self.search_input.text().lower()
         self.ad_list.clear()
@@ -48,6 +52,7 @@ class InsertAdDialog(QDialog):
         self.ad_list.addItems(matching_ads)
 
 
+    #Static ad creation method
     @staticmethod
     def get_selected_advertisement(advertisement_names : str, user : User):
         dialog = InsertAdDialog(advertisement_names, user)

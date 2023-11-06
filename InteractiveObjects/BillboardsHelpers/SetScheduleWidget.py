@@ -7,6 +7,7 @@ from InteractiveObjects.MainWindowHelper.ScheduleComposer import ScheduleCompose
 
 from Entity.User import User
 
+#Wiget that helps to set necessary schedule
 class SetScheduleWidget(QWidget):
     set_signal = pyqtSignal(str)
 
@@ -20,6 +21,7 @@ class SetScheduleWidget(QWidget):
         self.init_ui()
 
 
+    #Init all necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -40,12 +42,14 @@ class SetScheduleWidget(QWidget):
         self.resize(225, 30)
 
     
+    #Create new chedules button hendler
     def create_schedule(self):
         self.schedule_composer = ScheduleComposer(self.user)
         self.schedule_composer.move(self.x(), self.y())
         self.schedule_composer.show()
 
 
+    #Set necessary schedule and tell server about it
     def set_schedule(self):
         selected_schedule = self.schedule_combo.currentText()
 
@@ -65,11 +69,13 @@ class SetScheduleWidget(QWidget):
             self.show_error_message(set_response)
 
 
+    #Clear schedule_combo and list of posible schedules
     def clear_schedules(self):
         self.schedules = []
         self.schedule_combo.clear()
 
     
+    #Ask server about schedules for current user and Noone schedules
     def fill_schedules(self):
         schedules_request = f"GET ALL SCHEDULES FOR user = {self.user.login}"
         schedules_response = self.user.client.Get_response(schedules_request)
@@ -82,11 +88,13 @@ class SetScheduleWidget(QWidget):
         self.schedule_combo.addItems(self.schedules)
 
     
+    #Clear and fill schedules from the server
     def update_schedules(self):
         self.clear_schedules()
         self.fill_schedules()
 
 
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -96,6 +104,7 @@ class SetScheduleWidget(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

@@ -5,6 +5,7 @@ from PyQt5.QtGui import QColor
 from Entity.Schedules import Schedules
 from Entity.Ad import Ad
 
+#Wuget that helps show actual schedule
 class ScheduleViewer(QWidget):
     def __init__(self, schedules : Schedules, current_ad : Ad):
         super().__init__()
@@ -20,6 +21,7 @@ class ScheduleViewer(QWidget):
         self.show()
 
 
+    #Init all necessary graphics items
     def init_ui(self):
         list_widget = QListWidget(self)
         list_widget.setGeometry(10, 10, 380, 380)

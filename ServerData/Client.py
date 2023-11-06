@@ -1,11 +1,13 @@
 import socket
 
 class Client:
+    #Init socket data
     def __init__(self, host : str, port : int):
         self.host = host
         self.port = port
 
 
+    #Get abd decode response
     def Get_response(self, request : str):
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,10 +22,10 @@ class Client:
                     break
                 response += data
 
-            #print(response.decode('utf-8'))
         finally:
             client.close()
 
+        #Do not decode in we ask about video
         if 'GET AD' in request:
             return response
 
@@ -31,6 +33,7 @@ class Client:
             return response.decode('utf-8')
 
 
+    #Set video helper
     def Send_ad(self, video_name: str, video_url: str):
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -51,6 +54,7 @@ class Client:
             return "File uploaded successfully"
 
 
+    #Get local ip address
     def get_ip_address(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

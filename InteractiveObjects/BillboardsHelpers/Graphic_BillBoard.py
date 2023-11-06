@@ -19,6 +19,7 @@ from InteractiveObjects.BillboardsHelpers.ScheduleViewer import ScheduleViewer
 from InteractiveObjects.BillboardsHelpers.ScheduleEditor import ScheduleEditor
 from InteractiveObjects.BillboardsHelpers.BillboardGroupManager import BillboardGroupManager
 
+#Main billboard graphics class
 class GraphicBillboard(QGraphicsRectItem):
     def __init__(self, x : int, y : int, w : int, h : int, billboard : BillBoard, user : User):
         super().__init__(x, y, w, h)
@@ -34,6 +35,7 @@ class GraphicBillboard(QGraphicsRectItem):
         self.init_ui()
 
     
+    #Init all graphics items
     def init_ui(self):
         init_time = datetime.fromisoformat(self.user.client.Get_response("GET_TIME"))
 
@@ -65,6 +67,7 @@ class GraphicBillboard(QGraphicsRectItem):
         self.setFlag(QGraphicsObject.ItemIsSelectable, True)
 
     
+    #Init right clicked menu
     def contextMenuEvent(self, event: QGraphicsSceneContextMenuEvent):
         menu = QMenu()
         
@@ -85,18 +88,21 @@ class GraphicBillboard(QGraphicsRectItem):
         menu.addAction(show_group_action)
         menu.addAction(show_schedules_action)
 
+        #Add special actions for admin and owner of current billboard
         if self.user.login == self.billboard.owner_name or self.user.role == 'admin':
             menu.addAction(edit_schedule_action)
             menu.addAction(move_button_action)
 
         menu.addAction(watch_ad_action)
 
+        #Get delete action for admins onlt
         if self.user.role == 'admin':
             menu.addAction(delete_action)
 
         menu.exec(event.screenPos())
 
 
+    #Get all billboards groups for current owner, deparse it & show Owner viewer wiget
     def show_owner(self):
         groop_owner_request = f"GET GROOP BY OWNER owner = {self.billboard.owner_name}"
         groop_owner_repsnose = self.user.client.Get_response(groop_owner_request)
@@ -106,33 +112,34 @@ class GraphicBillboard(QGraphicsRectItem):
         self.ownerViewer.show()
 
 
+    #Show schedules wiget
     def show_schedules(self):
         self.schedulesViewer = ScheduleViewer(self.schedules, self.current_ad)
         self.schedulesViewer.move(self.x_pos, self.y_pos)
         self.schedulesViewer.show()
 
 
-    def watch_ad(self):
-        self.get_video()
-
-
+    #Show edit schedules wiget 
     def edit_schedule(self):
         self.editor = ScheduleEditor(self.user, self.schedules)
         self.editor.move(self.x_pos, self.y_pos)
         self.editor.show()
 
 
+    #Show move to other group wiget
     def move_to_groop(self):
         self.billboardGroupManager = BillboardGroupManager(self.user, self.billboard)
         self.billboardGroupManager.move(self.x_pos, self.y_pos)
         self.billboardGroupManager.show()
 
 
+    #Update quick info about billboard when mouse hovers the billboard
     def hoverEnterEvent(self, event):
         self.setToolTip(self.getToolTip())
         super().hoverEnterEvent(event)
 
 
+    #Show ad in clicked on billboard
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.get_video()
@@ -140,6 +147,7 @@ class GraphicBillboard(QGraphicsRectItem):
         super().mousePressEvent(event)
     
     
+    #Show quick billboard info
     def getToolTip(self):
         self.current_ad = None
 
@@ -149,6 +157,7 @@ class GraphicBillboard(QGraphicsRectItem):
         start_point = datetime.now()
         if_break = False
 
+        #Count curret ad
         while tmp_init < start_point:
             for ad in self.schedules.ad_queue:
                 self.current_ad = ad
@@ -168,15 +177,24 @@ class GraphicBillboard(QGraphicsRectItem):
         text = f"Group: {self.billboard.billboards_groop_name};\nOwner: {self.billboard.owner_name};\nSchedules: {self.billboard.schedules_name};\nCurrent ad: {self.current_ad.ad_name}."
         
         return text
+    
+
+    #Why is it here?
+    def watch_ad(self):
+        self.get_video()
 
 
+    #Watch video action
     def get_video(self):
+        #Say server that i will watch this add
         watch_request = f"WATCH AD ad = {self.current_ad.ad_name}"
         _ = self.user.client.Get_response(watch_request)
 
+        #If there is no such file in directory - upload it
         if not os.path.exists(self.current_ad.vidio_url):
             self.video_downloader = VideoDownloader(self.current_ad.vidio_url, self.user.client, self.x_pos, self.y_pos)
 
+            #Then check if we reach memory limit
             self.mp4FileManager = MP4FileManager(self.current_ad.vidio_url)
             self.mp4FileManager.manage_mp4_files()
 
@@ -184,9 +202,11 @@ class GraphicBillboard(QGraphicsRectItem):
             self.video_downloader.start()
 
         else:
+            #If we have this video - just show it
             self.on_download_finished()
 
 
+    #Show video in diffrent thread
     def on_download_finished(self):
         self.video_player = VideoPlayer(self.current_ad.vidio_url, self.schedules, self.user, self.x_pos, self.y_pos)
         time_diffrence = self.current_ad.ad_duration - int((self.start_play_time - datetime.now()).total_seconds())
@@ -194,6 +214,7 @@ class GraphicBillboard(QGraphicsRectItem):
         playback_thread.start()
 
     
+    #Delete billboard action
     def deleteBillboard(self):
         reply = QMessageBox.question(None, 'Delete billboard', 'Are you sure you want to delete it?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
@@ -203,11 +224,13 @@ class GraphicBillboard(QGraphicsRectItem):
             self.hide()
 
 
+    #Set TV screen as billboard image
     def set_background_image(self):
         self.background_image = QPixmap("Data/Billboard.jpg")
         self.background_image = self.background_image.scaled(self.w, self.h, Qt.KeepAspectRatio)
 
 
+    #draw this TV screen 
     def paint(self, painter, option, widget):
         super().paint(painter, option, widget)
         painter.drawPixmap(self.x_pos, self.y_pos, self.background_image)

@@ -2,6 +2,7 @@ import re
 
 from Entity.Ad import Ad
 
+#Simple schedule container
 class Schedules:
     def __init__(self, schedules_name : str):
         self.schedules_name = schedules_name

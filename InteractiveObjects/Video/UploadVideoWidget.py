@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton
 from Entity.User import User
 from InteractiveObjects.Video.Video_uploader import VideoUploader
 
+#Video uploader wiget
 class UploadVideoWidget(QWidget):
     def __init__(self, user: User):
         super().__init__()
@@ -12,6 +13,7 @@ class UploadVideoWidget(QWidget):
         self.init_ui()
 
 
+    #Init all necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -39,6 +41,7 @@ class UploadVideoWidget(QWidget):
         self.resize(400, 200)
 
 
+    #Choose file button handler
     def browse_video(self):
         options = QFileDialog.Options()
         options |= QFileDialog.ReadOnly
@@ -56,6 +59,7 @@ class UploadVideoWidget(QWidget):
                 self.file_path_label.setText(f"Selected File: {self.file_path}")
 
 
+    #Perform server uploader
     def upload_to_server(self):
         ad_name = self.ad_name_input.text().strip()
 
@@ -72,6 +76,7 @@ class UploadVideoWidget(QWidget):
         self.video_uploader.run()
 
 
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -81,6 +86,7 @@ class UploadVideoWidget(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

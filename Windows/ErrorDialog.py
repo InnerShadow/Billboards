@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox
 
-
+#Failed to connect to the server dialog
 class ErrorDialog(QMessageBox):
     def __init__(self):
         super().__init__()

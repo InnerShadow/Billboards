@@ -8,6 +8,7 @@ from InteractiveObjects.MainWindowHelper.InsertAdDialog import InsertAdDialog
 from Entity.User import User
 from Entity.Schedules import Schedules
 
+#Edit schedule helper
 class ScheduleEditor(QWidget):
     def __init__(self, user: User, schedules : Schedules):
         super().__init__()
@@ -23,6 +24,7 @@ class ScheduleEditor(QWidget):
         self.init_ui()
 
 
+    #Init all graphics objects
     def init_ui(self):
         layout = QVBoxLayout()
         button_layout = QHBoxLayout()
@@ -49,6 +51,7 @@ class ScheduleEditor(QWidget):
         self.fill_schedule()
 
 
+    #All ad helper manegment
     def show_context_menu(self, point):
         selected_item = self.schedule_list.itemAt(point)
         if selected_item:
@@ -64,6 +67,7 @@ class ScheduleEditor(QWidget):
                 self.delete_advertisement(selected_item)
 
 
+    #Get all posible ads from the server
     def get_ads(self):
         ads_request = "GET ALL ADS"
         ads_response = self.user.client.Get_response(ads_request)
@@ -74,12 +78,14 @@ class ScheduleEditor(QWidget):
             self.ads.append(match.group(1))
 
 
+    #Fill current schedule
     def fill_schedule(self):
         for ad in self.schedules.ad_queue:
             item = QListWidgetItem(ad.ad_name)
             self.schedule_list.addItem(item)
 
 
+    #Add advertisement below option
     def add_advertisement_below(self, selected_item):
         if self.ads:
             selected_ad, ok = InsertAdDialog(self.ads, self.user).get_selected_advertisement(self.ads, self.user)
@@ -90,12 +96,14 @@ class ScheduleEditor(QWidget):
                     self.schedule_list.insertItem(row + 1, item)
 
 
+    #Delete advertisement option
     def delete_advertisement(self, selected_item):
         row = self.schedule_list.row(selected_item)
         if row != -1:
             self.schedule_list.takeItem(row)
 
     
+    #Button add ad handler
     def add_advertisement(self):
         if self.ads:
             selected_ad, ok = InsertAdDialog(self.ads, self.user).get_selected_advertisement(self.ads, self.user)
@@ -105,6 +113,7 @@ class ScheduleEditor(QWidget):
                     self.schedule_list.addItem(item)
 
 
+    #Button remove last add handler
     def remove_advertisement(self):
         if self.schedule_list.count() > 0:
             item = self.schedule_list.takeItem(self.schedule_list.count() - 1)
@@ -112,6 +121,7 @@ class ScheduleEditor(QWidget):
                 del item
 
     
+    #Save current schedule and tell server about it
     def save_changes(self):
         schedule = [self.schedule_list.item(i).text() for i in range(self.schedule_list.count())]
         if not schedule:
@@ -132,6 +142,7 @@ class ScheduleEditor(QWidget):
             self.show_error_message(schedules_response)
 
 
+    #Show specific error message box
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -141,6 +152,7 @@ class ScheduleEditor(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message box
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

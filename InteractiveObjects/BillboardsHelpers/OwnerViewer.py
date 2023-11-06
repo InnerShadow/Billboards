@@ -8,6 +8,7 @@ from InteractiveObjects.BillboardsHelpers.TransferOwnershipWiget import Transfer
 from InteractiveObjects.BillboardsHelpers.SetScheduleWidget import SetScheduleWidget
 from Entity.User import User
 
+#Owner viewer and handler wiget
 class OwnerViewer(QWidget):
     def __init__(self, owner_name: str, response : str, billboards_groop_name : str, user : User):
         super().__init__()
@@ -29,6 +30,7 @@ class OwnerViewer(QWidget):
         self.show()
 
 
+    #Init all graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -53,6 +55,7 @@ class OwnerViewer(QWidget):
             self.groups_list.customContextMenuRequested.connect(self.show_context_menu)
 
 
+    #Get billboards group name and num of billboards in this group
     def deparse_response(self, response : str):
         response += " "
         pattern = r'Group: (.*?), Billboard_Count: (.*?) '
@@ -64,6 +67,7 @@ class OwnerViewer(QWidget):
             self.counts.append(int(billboard_Count))
 
 
+    #Show spesific menu when right mouse button was clicked
     def show_context_menu(self, pos):
         list_widget = self.sender()
         item = list_widget.currentItem()
@@ -89,6 +93,7 @@ class OwnerViewer(QWidget):
             context_menu.exec_(list_widget.mapToGlobal(pos))
 
 
+    #Wiget that helps to set new schedule to the group
     def setSchedules(self):
         self.setWiget = SetScheduleWidget(self.user, self.schosen_group)
         self.setWiget.move(self.x(), self.y())
@@ -97,6 +102,7 @@ class OwnerViewer(QWidget):
         #self.setWiget.set_signal.connect(self.updateInfo)
 
 
+    #Wiget of transfer ownership
     def transfer_ownership(self):
         self.transferWiget = TransferOwnershipWiget(self.user, self.schosen_group)
         self.transferWiget.move(self.x(), self.y())
@@ -105,6 +111,7 @@ class OwnerViewer(QWidget):
         self.transferWiget.transer_signal.connect(self.hide)
 
 
+    #Fill groups and num of billboards in each group
     def deparseServerResponse(self):
         groop_owner_request = f"GET GROOP BY OWNER owner = {self.owner_name}"
         groop_owner_repsnose = self.user.client.Get_response(groop_owner_request)
@@ -115,6 +122,7 @@ class OwnerViewer(QWidget):
         self.deparse_response(groop_owner_repsnose)
 
     
+    #Update info about groups and num of billboards in the group
     def updateInfo(self, new_owner_name: str, billboard_group : str):
         if self.billboards_groop_name == billboard_group:
             self.owner_name = new_owner_name
@@ -125,6 +133,7 @@ class OwnerViewer(QWidget):
         self.createInfo()
 
 
+    #Clear layout
     def clearInfo(self):
         layout = self.layout()
         if layout is not None:
@@ -135,6 +144,7 @@ class OwnerViewer(QWidget):
                     widget.deleteLater()
 
 
+    #Fill info about owner and billboards groups
     def createInfo(self):
         layout = self.layout()
 

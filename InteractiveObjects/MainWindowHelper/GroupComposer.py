@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QComboBox, 
 from Entity.User import User
 from InteractiveObjects.MainWindowHelper.ScheduleComposer import ScheduleComposer
 
+#Handler of 'Group create' button clicked
 class GroupComposer(QWidget):
     accepted = pyqtSignal()
 
@@ -16,6 +17,7 @@ class GroupComposer(QWidget):
         self.init_ui()
     
     
+    #Init all necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -45,6 +47,7 @@ class GroupComposer(QWidget):
         self.setLayout(layout)
     
 
+    #Ask server about all posible schedules
     def load_schedules(self):
         schedules_request = "GET ALL SCHEDULES"
         schedules_response = self.user.client.Get_response(schedules_request)
@@ -56,16 +59,19 @@ class GroupComposer(QWidget):
             self.schedule_combo.addItem(match.group(1))
 
 
+    #perform schedules update
     def update_schedules(self):
         self.clear_schedules()
         self.load_schedules()
 
 
+    #Cleat schedules list and como box
     def clear_schedules(self):
         self.schedules = []
         self.schedule_combo.clear()
     
 
+    #Handle 'Create new schedule' clicked
     def create_new_schedule(self):
         self.schedule_composer = ScheduleComposer(self.user)
         self.schedule_composer.move(self.x(), self.y())
@@ -73,7 +79,9 @@ class GroupComposer(QWidget):
         self.schedule_composer.show()
     
 
+    #Perform create group clecked
     def create_group(self):
+        #check if all filed do not empty
         group_name = self.group_name_input.text().strip()
         if not group_name:
             self.show_error_message("Please enter a group name.")
@@ -84,6 +92,7 @@ class GroupComposer(QWidget):
             self.show_error_message("Please select or create a schedule.")
             return
         
+        #then ask server to create new group
         create_request = f"GET CREATE GROUP group_name = {group_name}, schedule_name = {schedule_name}"
         create_response = self.user.client.Get_response(create_request)
 
@@ -96,6 +105,7 @@ class GroupComposer(QWidget):
             self.show_error_message(create_response)
     
 
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -105,6 +115,7 @@ class GroupComposer(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

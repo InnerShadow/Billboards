@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSignal
 from ServerData.Client import Client
 
 class AuthenticationWindow(QWidget):
+    #Main Window will catch thi signal
     login_successful = pyqtSignal(str)
 
     def __init__(self, client : Client):
@@ -14,6 +15,7 @@ class AuthenticationWindow(QWidget):
         self.init_ui()
 
 
+    #Set buttons & lines to enter data
     def init_ui(self):
         self.setWindowTitle('Authentication')
         self.setGeometry(300, 300, 400, 200)
@@ -51,17 +53,23 @@ class AuthenticationWindow(QWidget):
         self.setLayout(layout)
 
 
-    def log_in(self):    
+    #Try to log in
+    def log_in(self):
+        #Get texts from line editors    
         username = self.username_input.text()
         password = self.password_input.text()
 
-        if username and password: 
+        #If fill all fields
+        if username and password:
+            #Ask server to check data 
             idendefication_request = f"TRY TO LOG IN login = {username}, password = {password}"
             idendefication_repsnose = self.client.Get_response(idendefication_request)
 
+            #Deparse it
             autendeficated_pattern = r'IDENDEFICATION OK role = (\w+) '
             autendeficated_matches = re.search(autendeficated_pattern, idendefication_repsnose)
 
+            #If idendefication ok
             if autendeficated_matches:
                 self.hide()
 
@@ -70,16 +78,20 @@ class AuthenticationWindow(QWidget):
                 self.show_success_message(f"Logged in successfully as {username}")
                 self.login_successful.emit(f'Logged in successfully username = {username}, role = {role}')
 
+            #Else say it & highlight fields
             else:
                 self.highlight_fields()
                 self.show_error_message("Logged in failed")
 
+        #Ask to fill all fields
         else:
             self.highlight_fields()
             self.show_error_message("Logged in failed")
 
 
+    #Continue as viewer option
     def continue_as_viewer(self):
+        #Tell server about continue as viewer option
         viewer_request = f"CONTINUE AS VIEWER"
         _ = self.client.Get_response(viewer_request)
         self.hide()
@@ -87,12 +99,14 @@ class AuthenticationWindow(QWidget):
         self.login_successful.emit(f'Logged in successfully username = VIEWER, role = viewer')
 
 
+    #Simply highlight input fields
     def highlight_fields(self):
         style = "QLineEdit { background-color: #FF9999; }"
         self.username_input.setStyleSheet(style)
         self.password_input.setStyleSheet(style)
 
 
+    #Messege box about faild idendefication
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -101,6 +115,7 @@ class AuthenticationWindow(QWidget):
         error_dialog.exec_()
 
 
+    #Messege box about success idendefication
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

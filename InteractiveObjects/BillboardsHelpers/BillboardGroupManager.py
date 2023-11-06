@@ -6,6 +6,7 @@ from Entity.User import User
 from Entity.Billboard import BillBoard
 from InteractiveObjects.MainWindowHelper.GroupComposer import GroupComposer
 
+#Wiget of billboard movment to other group
 class BillboardGroupManager(QWidget):
     def __init__(self, user : User, billboard : BillBoard):
         super().__init__()
@@ -17,6 +18,7 @@ class BillboardGroupManager(QWidget):
         self.init_ui()
 
 
+    #Init all graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -42,6 +44,7 @@ class BillboardGroupManager(QWidget):
         self.resize(225, 30)
 
 
+    #perform movment
     def move_billboard(self):
         move_to = self.group_combo.currentText()
 
@@ -60,6 +63,7 @@ class BillboardGroupManager(QWidget):
             self.show_error_message(move_response)
 
 
+    #If user want to greate new group show specific wiget
     def create_new_group(self):
         self.schedule_composer = GroupComposer(self.user)
         self.schedule_composer.move(self.x(), self.y())
@@ -67,16 +71,19 @@ class BillboardGroupManager(QWidget):
         self.schedule_composer.show()
 
 
+    #Update info if new group was created
     def update_groops(self):
         self.clearGroops()
         self.fill_groups()
 
 
+    #Clwar all groups befor update them
     def clearGroops(self):
         self.groups = []
         self.group_combo.clear()
 
 
+    #Ask server to get all groups fot this user and groups for Noone
     def fill_groups(self):
         groops_request = f"GET ALL GROOPS for user = {self.user.login}"
         groups_response = self.user.client.Get_response(groops_request)
@@ -89,6 +96,7 @@ class BillboardGroupManager(QWidget):
         self.group_combo.addItems(self.groups)
 
 
+    #Show specific error window
     def show_error_message(self, message):
         error_dialog = QMessageBox()
         error_dialog.setIcon(QMessageBox.Critical)
@@ -98,6 +106,7 @@ class BillboardGroupManager(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success mwssage
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

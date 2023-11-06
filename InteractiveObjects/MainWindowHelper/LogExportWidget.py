@@ -6,6 +6,7 @@ from Entity.User import User
 
 from InteractiveObjects.MainWindowHelper.LogViewerWidget import LogViewerWidget
 
+#L=Handle log export main menu option
 class LogExportWidget(QWidget):
     def __init__(self, user : User):
         super().__init__()
@@ -15,6 +16,7 @@ class LogExportWidget(QWidget):
         self.show()
 
 
+    #Init all method graphics items
     def initUI(self):
         layout = QVBoxLayout()
 
@@ -36,6 +38,7 @@ class LogExportWidget(QWidget):
         self.resize(200, 75)
 
 
+    #Ask server to get all usernames
     def fillCombo(self):
         users_request = f"GET ALL USERS"
         users_response = self.user.client.Get_response(users_request)
@@ -50,6 +53,7 @@ class LogExportWidget(QWidget):
         self.user_combo.addItems(user_list)
 
 
+    #Perform log export
     def doExpotr(self):
         logs_request = f"GET LOGS FOR user = {self.user_combo.currentText()}"
         logs_response = self.user.client.Get_response(logs_request)

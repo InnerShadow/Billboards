@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QHBoxLayout, QVBoxLayout
 from PyQt5.QtGui import QPixmap
 
+#Handler of 'Info' button
 class InfoWiget(QWidget):
     def __init__(self):
         super().__init__()
@@ -8,6 +9,7 @@ class InfoWiget(QWidget):
         self.init_ui()
 
     
+    #Init all necessary grophics items & load images
     def init_ui(self):  
         self.setWindowTitle("Info")
 

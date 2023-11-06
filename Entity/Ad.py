@@ -1,4 +1,5 @@
 
+#Simple ad container
 class Ad:
     def __init__(self, vidio_url : str, ad_name : str, ad_duration : int):
         self.vidio_url = vidio_url

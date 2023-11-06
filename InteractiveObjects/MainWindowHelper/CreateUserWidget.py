@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit
 
 from Entity.User import User
 
+#Handler of users creation
 class CreateUserWidget(QWidget):
     created = pyqtSignal()
 
@@ -14,6 +15,7 @@ class CreateUserWidget(QWidget):
         self.initUI()
 
 
+    #Init all necessary graphics items
     def initUI(self):
         layout = QVBoxLayout()
 
@@ -48,6 +50,7 @@ class CreateUserWidget(QWidget):
         self.setLayout(layout)
 
 
+    #User creation perform
     def create_user_clicked(self):
         name = self.name_input.text()
         password = self.password_input.text()
@@ -59,6 +62,7 @@ class CreateUserWidget(QWidget):
         self.show_success_message(createUserResponse)
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox()
         success_dialog.setIcon(QMessageBox.Information)

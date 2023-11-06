@@ -6,6 +6,7 @@ from PyQt5.QtCore import pyqtSignal
 
 from Entity.User import User
 
+#Wiget that helps to transfer ownership of billboard
 class TransferOwnershipWiget(QWidget):
     transer_signal = pyqtSignal(str, str)
 
@@ -19,6 +20,7 @@ class TransferOwnershipWiget(QWidget):
         self.init_ui()
 
 
+    #Init all necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
 
@@ -52,6 +54,7 @@ class TransferOwnershipWiget(QWidget):
         self.activateWindow()
 
 
+    #Show specific error message
     def show_error_message(self, message):
         error_dialog = QMessageBox(self)
         error_dialog.setWindowTitle('Error')
@@ -61,6 +64,7 @@ class TransferOwnershipWiget(QWidget):
         error_dialog.exec_()
 
 
+    #Show specific success message
     def show_success_message(self, message):
         success_dialog = QMessageBox(self)
         success_dialog.setWindowTitle('Success')
@@ -70,6 +74,7 @@ class TransferOwnershipWiget(QWidget):
         success_dialog.exec_()
         
 
+    #Ask user if he sure about thanse ownership
     def show_confirmation_dialog(self):
         selected_user = self.user_lineedit.text()
 
@@ -93,6 +98,7 @@ class TransferOwnershipWiget(QWidget):
         dialog.exec_()
 
 
+    #Do transfer ownership
     def confirm_transfer_ownership(self, selected_user : str, dialog):
         if selected_user in self.user_list:
             transfer_request = f"TRANSFER OWNERSHIP OF {self.billboards_group} TO {selected_user}"
