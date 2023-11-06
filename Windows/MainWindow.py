@@ -435,8 +435,11 @@ class MainWindow(QMainWindow):
 
         else:
             cursor_pos = QCursor.pos()
-            x = 0.805 * round(cursor_pos.x() / self.view.viewport().width(), 3)
-            y = 0.905 * round(cursor_pos.y() / self.view.viewport().height(), 3)
+            pos_in_view = self.view.mapFromGlobal(cursor_pos)
+            pos_in_scene = self.view.mapToScene(pos_in_view)
+
+            x = round(pos_in_scene.x() / self.scene.width(), 3)
+            y = round(pos_in_scene.y() / self.scene.height(), 3)
 
             self.billboardCreatorWidget = BillboardCreatorWidget(self.user, x, y)
             self.billboardCreatorWidget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
