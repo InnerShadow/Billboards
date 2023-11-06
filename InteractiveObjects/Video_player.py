@@ -1,12 +1,24 @@
+import os
 import pygame
 import tempfile
-import os
+import threading
 
 from moviepy.editor import VideoFileClip
 
+from InteractiveObjects.Video_downloader import VideoDownloader
+
+from Entity.Schedules import Schedules
+from Entity.MP4FileManager import MP4FileManager
+from Entity.User import User
+
 class VideoPlayer:
-    def __init__(self, video_url : str):
+    def __init__(self, video_url : str, schedule : Schedules, user : User, x_pos : int, y_pos : int):
         self.video_url = video_url
+        self.schedule = schedule
+
+        self.user = user
+        self.x_pos = x_pos
+        self.y_pos = y_pos
 
 
     def play(self, start_time : int):
@@ -50,4 +62,41 @@ class VideoPlayer:
 
         os.remove(temp_audio_file.name)
 
-        pygame.quit()
+        if running:
+            self.play_next()
+            
+        else:
+            pygame.quit()
+
+
+    def play_next(self):
+        next_ad_id = 1
+
+        for ad in self.schedule.ad_queue:
+            next_ad_id += 1
+            if self.video_url == ad.vidio_url:
+                break
+            
+        if next_ad_id >= len(self.schedule.ad_queue):
+            next_ad_id = 0
+
+        self.next_ad = self.schedule.ad_queue[next_ad_id]
+
+        if not os.path.exists(self.next_ad.vidio_url):
+            self.video_downloader = VideoDownloader(self.next_ad.vidio_url, self.user.client, self.x_pos, self.y_pos)
+
+            self.mp4FileManager = MP4FileManager(self.next_ad.vidio_url)
+            self.mp4FileManager.manage_mp4_files()
+
+            self.video_downloader.finished.connect(self.on_download_finished)
+            self.video_downloader.start()
+
+        else:
+            self.on_download_finished()
+
+
+    def on_download_finished(self):
+        self.video_player = VideoPlayer(self.next_ad.vidio_url, self.schedule, self.user, self.x_pos, self.y_pos)
+        playback_thread = threading.Thread(target = self.video_player.play, args = (0, ))
+        playback_thread.start()
+

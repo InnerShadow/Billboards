@@ -166,7 +166,7 @@ class GraphicBillboard(QGraphicsRectItem):
 
             self.init_time = tmp_init
     
-        text = f"""Group: {self.billboard.billboards_groop_name};\nOwner: {self.billboard.owner_name};\nSchedules: {self.billboard.schedules_name};\nCurrent ad: {self.current_ad.ad_name}."""
+        text = f"Group: {self.billboard.billboards_groop_name};\nOwner: {self.billboard.owner_name};\nSchedules: {self.billboard.schedules_name};\nCurrent ad: {self.current_ad.ad_name}."
         
         return text
 
@@ -187,6 +187,13 @@ class GraphicBillboard(QGraphicsRectItem):
         else:
             self.on_download_finished()
 
+
+    def on_download_finished(self):
+        self.video_player = VideoPlayer(self.current_ad.vidio_url, self.schedules, self.user, self.x_pos, self.y_pos)
+        time_diffrence = self.current_ad.ad_duration - int((self.start_play_time - datetime.now()).total_seconds())
+        playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence, ))
+        playback_thread.start()
+
     
     def deleteBillboard(self):
         reply = QMessageBox.question(None, 'Delete billboard', 'Are you sure you want to delete it?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -195,14 +202,6 @@ class GraphicBillboard(QGraphicsRectItem):
             delete_request = f"REMOVE BILLBORD x_pos = {self.billboard.x_pos}, y_pos = {self.billboard.y_pos}"
             _ = self.user.client.Get_response(delete_request)
             self.hide()
-
-
-    def on_download_finished(self):
-        self.video_player = VideoPlayer(self.current_ad.vidio_url)
-        time_diffrence = self.current_ad.ad_duration - int((self.start_play_time - datetime.now()).total_seconds())
-        print(time_diffrence)
-        playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence, ))
-        playback_thread.start()
 
 
     def set_background_image(self):
