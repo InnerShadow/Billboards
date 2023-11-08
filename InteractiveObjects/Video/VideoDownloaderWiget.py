@@ -17,6 +17,9 @@ class VideoDownloaderWiget(QWidget):
     #Init necessary graphics items
     def init_ui(self):
         layout = QVBoxLayout()
+
+        self.setWindowTitle("Downloading...")
+
         self.progress_label = QLabel('Downloading video...')
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 0)
