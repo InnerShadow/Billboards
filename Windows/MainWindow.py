@@ -16,6 +16,7 @@ from InteractiveObjects.Video.UploadVideoWidget import UploadVideoWidget
 
 from InteractiveObjects.MainWindowHelper.InfoWiget import InfoWiget
 from InteractiveObjects.MainWindowHelper.GroupComposer import GroupComposer
+from InteractiveObjects.MainWindowHelper.StatusBarWiget import StatusBarWiget
 from InteractiveObjects.MainWindowHelper.LogExportWidget import LogExportWidget
 from InteractiveObjects.MainWindowHelper.StatisticsWiget import StatisticsWiget
 from InteractiveObjects.MainWindowHelper.ScheduleComposer import ScheduleComposer
@@ -136,6 +137,9 @@ class MainWindow(QMainWindow):
         export_logs_action = QAction('Export logs', self)
         export_logs_action.triggered.connect(self.showExportLogs)
 
+        status_bar_action = QAction('Status Bar', self)
+        status_bar_action.triggered.connect(self.showStatusBar)
+
         menubar = self.menuBar()
 
         login_menu = menubar.addMenu('Log in')
@@ -149,6 +153,9 @@ class MainWindow(QMainWindow):
 
         logs_menu = menubar.addMenu('Logs')
         logs_menu.addAction(export_logs_action)
+
+        status_bar_menu = menubar.addMenu('Status Bar')
+        status_bar_menu.addAction(status_bar_action)
 
 
     #Init infi button
@@ -407,6 +414,16 @@ class MainWindow(QMainWindow):
         self.waiting_for_create_billboard = True
 
     
+    def showStatusBar(self):
+        if self.user.role == 'admin':
+            self.statusBarWiget = StatusBarWiget(self.user)
+            self.statusBarWiget.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+            self.statusBarWiget.show()
+
+        else:
+            self.status_bar_failed()
+
+    
     #Show log in wiget
     def showLoginWindow(self):
         self.updateGraphicsItems()
@@ -452,6 +469,15 @@ class MainWindow(QMainWindow):
         for item in self.scene.items():
             if isinstance(item, QGraphicsRectItem):
                 self.scene.removeItem(item)
+
+
+    def status_bar_failed(self):
+        error_dialog = QMessageBox()
+        error_dialog.setIcon(QMessageBox.Critical)
+        error_dialog.setWindowTitle("Error")
+        error_dialog.setText("Only admin can observe status bar!")
+        error_dialog.move(int(self.view.viewport().height() // 1.25), self.view.viewport().width() // 4)
+        error_dialog.exec_()
 
     
     #Error about log export

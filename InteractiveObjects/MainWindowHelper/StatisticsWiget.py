@@ -25,6 +25,8 @@ class StatisticsWiget(QWidget):
         layout.addWidget(self.label_ads_watched)
         self.setLayout(layout)
 
+        self.update_ads_counts()
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_ads_counts)
         self.timer.start(2000)
