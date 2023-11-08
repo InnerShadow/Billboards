@@ -64,6 +64,9 @@ class VideoPlayer:
             if t >= video.duration:
                 break
 
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.stop()
+
         os.remove(temp_audio_file.name)
 
         #Play next and if prev was not closed
