@@ -1,5 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QPushButton
 from PyQt5.QtCore import QTimer
+
+from InteractiveObjects.MainWindowHelper.AdsStatisticsWiget import AdsStatisticsWiget
 
 from Entity.User import User
 
@@ -20,9 +22,13 @@ class StatisticsWiget(QWidget):
         self.label_ads_show = QLabel("Ads show: 0", self)
         self.label_ads_watched = QLabel("Ads watched: 0", self)
 
+        self.button_show_statistics = QPushButton("Show watched ad statistics", self)
+        self.button_show_statistics.clicked.connect(self.show_statistics_clicked)
+
         layout = QVBoxLayout(self)
         layout.addWidget(self.label_ads_show)
         layout.addWidget(self.label_ads_watched)
+        layout.addWidget(self.button_show_statistics)
         self.setLayout(layout)
 
         self.update_ads_counts()
@@ -47,6 +53,12 @@ class StatisticsWiget(QWidget):
 
         self.label_ads_show.setText(f"Ads show: {ads_show_value}")
         self.label_ads_watched.setText(f"Ads watched: {ads_watched_value}")
+
+    
+    def show_statistics_clicked(self):
+        self.adsStatisticsWiget = AdsStatisticsWiget(self.user)
+        self.adsStatisticsWiget.move(self.x(), self.y())
+        self.adsStatisticsWiget.show()
 
 
     #Perform exit
