@@ -209,9 +209,16 @@ class GraphicBillboard(QGraphicsRectItem):
     #Show video in diffrent thread
     def on_download_finished(self):
         self.video_player = VideoPlayer(self.current_ad.vidio_url, self.schedules, self.user, self.x_pos, self.y_pos)
+        self.video_player.not_finished.connect(self.playNext)
         time_diffrence = self.current_ad.ad_duration - int((self.start_play_time - datetime.now()).total_seconds())
         playback_thread = threading.Thread(target = self.video_player.play, args = (time_diffrence, ))
         playback_thread.start()
+
+    
+    def playNext(self, notFinished):
+        if notFinished:
+            self.getToolTip()
+            self.get_video()
 
     
     #Delete billboard action

@@ -5,6 +5,8 @@ import threading
 
 from moviepy.editor import VideoFileClip
 
+from PyQt5.QtCore import pyqtSignal, QObject
+
 from InteractiveObjects.Video.Video_downloader import VideoDownloader
 
 from Entity.Schedules import Schedules
@@ -12,8 +14,11 @@ from InteractiveObjects.Video.MP4FileManager import MP4FileManager
 from Entity.User import User
 
 #Video player based on pygame
-class VideoPlayer:
+class VideoPlayer(QObject):
+    not_finished = pyqtSignal(bool)
+
     def __init__(self, video_url : str, schedule : Schedules, user : User, x_pos : int, y_pos : int):
+        super().__init__()
         self.video_url = video_url
         self.schedule = schedule
 
@@ -71,10 +76,9 @@ class VideoPlayer:
 
         #Play next and if prev was not closed
         if running:
-            self.play_next()
+            self.not_finished.emit(running)
 
-        else:
-            pygame.quit()
+        pygame.quit()
 
 
     #Handler new playing ad
